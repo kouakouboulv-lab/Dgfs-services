@@ -1,0 +1,560 @@
+{% extends "gestion/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+    background:#f5f7fb;
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:700;
+    color:#0d6efd;
+    margin-bottom:20px;
+}
+
+/* ================= LAYOUT ================= */
+
+.journal-layout{
+    display:flex;
+    gap:25px;
+    align-items:flex-start;
+}
+
+.left-side,
+.right-side{
+    width:50%;
+}
+
+.right-side{
+    position:sticky;
+    top:20px;
+}
+
+/* ================= CARD ================= */
+
+.card-pro{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(13,110,253,0.08);
+    margin-bottom:20px;
+    border:none;
+}
+
+.card-body{
+    padding:20px;
+}
+
+/* ================= FORM ================= */
+
+.label{
+    font-weight:600;
+    color:#495057;
+    margin-bottom:6px;
+}
+
+/* ================= BUTTON ================= */
+
+.btn-primary{
+    background:#0d6efd;
+    border:none;
+    border-radius:10px;
+}
+
+.btn-danger{
+    border-radius:10px;
+}
+
+/* ================= TABLE ================= */
+
+.table-scroll{
+    max-height:450px;
+    overflow-y:auto;
+}
+
+.table thead{
+    position:sticky;
+    top:0;
+    background:#0d6efd;
+    color:white;
+    z-index:2;
+}
+
+.table tbody tr:hover{
+    background:rgba(13,110,253,0.05);
+}
+
+/* ================= TOTAL ================= */
+
+.total{
+    padding:16px;
+    border-radius:14px;
+    background:#16a34a;
+    color:white;
+    text-align:center;
+    font-size:18px;
+    font-weight:600;
+}
+
+.total-box{
+    padding:16px;
+    border-radius:14px;
+    background:#dc3545;
+    color:white;
+    text-align:center;
+    font-size:18px;
+    font-weight:600;
+    margin-top:15px;
+}
+
+/* ================= CALENDAR ================= */
+
+.calendar-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(13,110,253,0.08);
+    overflow:hidden;
+}
+
+.calendar-header{
+    background:#0d6efd;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:20px;
+    font-weight:700;
+}
+
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+    padding:15px;
+}
+
+.day-name{
+    text-align:center;
+    font-weight:700;
+    color:#6c757d;
+    padding:10px 0;
+}
+
+.calendar-empty{
+    min-height:85px;
+}
+
+.calendar-day{
+    background:#f8f9fa;
+    border-radius:14px;
+    min-height:90px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+    transition:0.25s;
+
+    border:1px solid transparent;
+    text-align:center;
+}
+
+.calendar-day:hover{
+    transform:translateY(-2px);
+    border-color:#0d6efd;
+    background:white;
+    box-shadow:0 6px 14px rgba(13,110,253,0.12);
+}
+
+.day-number{
+    font-weight:800;
+    font-size:18px;
+    color:#0d6efd;
+}
+
+.day-total{
+    font-size:12px;
+    font-weight:700;
+    color:#16a34a;
+    background:#e9f9ef;
+    padding:3px 6px;
+    border-radius:8px;
+}
+
+.today{
+    border:2px solid #16a34a;
+}
+
+.selected{
+    border:2px solid #0d6efd;
+    background:#eef5ff;
+}
+
+/* ================= MODAL ================= */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.modal-box{
+    width:650px;
+    max-width:95%;
+    max-height:85vh;
+
+    overflow-y:auto;
+
+    background:white;
+    border-radius:20px;
+    padding:20px;
+
+    animation:pop 0.2s ease;
+}
+
+@keyframes pop{
+    from{transform:scale(0.9);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.close-btn{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#dc3545;
+    color:white;
+    cursor:pointer;
+}
+
+.modal-item{
+    background:#f8f9fa;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.modal-client{
+    font-weight:700;
+}
+
+.modal-service{
+    color:#6c757d;
+}
+
+.modal-total{
+    color:#16a34a;
+    font-weight:700;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px){
+    .journal-layout{
+        flex-direction:column;
+    }
+
+    .left-side,
+    .right-side{
+        width:100%;
+    }
+
+    .right-side{
+        position:relative;
+    }
+}
+
+</style>
+
+<div style="width:100%">
+
+    <div class="page-title">
+        📒 Journal du Cybercafé
+    </div>
+
+    <div class="journal-layout">
+
+        <!-- ================= LEFT ================= -->
+        <div class="left-side">
+
+            <!-- FORM -->
+            <div class="card-pro">
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-3">
+                                <div class="label">Client</div>
+                                <input type="text" name="client" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="label">Service</div>
+                                <select name="service" class="form-select" required>
+                                    <option value="impression">🖨 Impression</option>
+                                    <option value="inscription">📝 Inscription</option>
+                                    <option value="photo">📸 Photo</option>
+                                    <option value="carnet">📘 Carnet</option>
+                                    <option value="autre">🔧 Autre</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">PU</div>
+                                <input type="number" name="prix_unitaire" class="form-control">
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">Qté</div>
+                                <input type="number" name="quantite" class="form-control" value="1">
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">Total</div>
+                                <input type="number" name="montant_total" class="form-control">
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-3">
+                            ➕ Ajouter activité
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- DEPENSE -->
+            <div class="card-pro">
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-2">
+
+                            <div class="col-md-8">
+                                <input type="number" name="depense_jour"
+                                       class="form-control"
+                                       placeholder="💸 Dépense">
+                            </div>
+
+                            <div class="col-md-4">
+                                <button class="btn btn-danger w-100" name="save_depense">
+                                    Enregistrer
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="card-pro">
+                <div class="card-body table-scroll">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Heure</th>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for a in activites %}
+                            <tr>
+                                <td>{{ a.heure }}</td>
+                                <td>{{ a.client }}</td>
+                                <td>{{ a.service }}</td>
+                                <td><strong>{{ a.montant }} FCFA</strong></td>
+                                <td>
+                                    <a href="{% url 'supprimer_activite' a.id %}"
+                                       class="btn btn-danger btn-sm">🗑</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    Aucune activité
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="total">
+                💰 Total : {{ total }} FCFA
+            </div>
+
+            <div class="total-box">
+                💸 Dépenses : {{ total_depenses }} FCFA
+            </div>
+
+        </div>
+
+        <!-- ================= RIGHT ================= -->
+        <div class="right-side">
+
+            <div class="calendar-card">
+
+                <div class="calendar-header">
+                    📅 {{ mois_nom }} {{ annee }}
+                </div>
+
+                <div class="calendar-grid">
+
+                    <div class="day-name">Lun</div>
+                    <div class="day-name">Mar</div>
+                    <div class="day-name">Mer</div>
+                    <div class="day-name">Jeu</div>
+                    <div class="day-name">Ven</div>
+                    <div class="day-name">Sam</div>
+                    <div class="day-name">Dim</div>
+
+                    {% for _ in empty_start %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
+
+                    {% for day in calendrier %}
+
+                        <div class="calendar-day calendar-click
+                            {% if day.is_today %}today{% endif %}
+                            {% if day.is_selected %}selected{% endif %}"
+                            data-date="{{ day.date|date:'Y-m-d' }}">
+
+                            <div class="day-number">{{ day.numero }}</div>
+
+                            {% if day.total > 0 %}
+                                <div class="day-total">{{ day.total }} FCFA</div>
+                            {% else %}
+                                <div class="day-total">0 FCFA</div>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                    {% for _ in empty_end %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+<div id="dayModal" class="modal-overlay">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3 id="modalTitle">📅 Détails</h3>
+            <button class="close-btn" onclick="closeModal()">✖</button>
+        </div>
+
+        <div id="modalBody"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+const modal = document.getElementById("dayModal");
+const modalBody = document.getElementById("modalBody");
+const modalTitle = document.getElementById("modalTitle");
+
+document.querySelectorAll(".calendar-click").forEach(el => {
+
+    el.addEventListener("click", async () => {
+
+        const date = el.dataset.date;
+
+        modal.style.display = "flex";
+
+        modalTitle.innerHTML = "📅 " + date;
+
+        modalBody.innerHTML = "Chargement...";
+
+        const res = await fetch(`/journal-details/?date=${date}`);
+        const data = await res.json();
+
+        let html = "";
+
+        if (data.activites.length === 0) {
+            html = "<p style='text-align:center'>Aucune activité</p>";
+        } else {
+
+            data.activites.forEach(a => {
+                html += `
+                    <div class="modal-item">
+                        <div class="modal-client">${a.client}</div>
+                        <div class="modal-service">${a.service}</div>
+                        <div class="modal-total">${a.montant} FCFA</div>
+                    </div>
+                `;
+            });
+        }
+
+        html += `<hr><div class="total">💰 Total : ${data.total}</div>`;
+
+        modalBody.innerHTML = html;
+
+    });
+
+});
+
+function closeModal(){
+    modal.style.display = "none";
+}
+
+window.onclick = function(e){
+    if(e.target === modal){
+        closeModal();
+    }
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "gestion/base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Café</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; }
+        .pc {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+            background: white;
+        }
+        .dispo { color: green; }
+        .occupe { color: red; }
+        button {
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>💻 Gestion Cyber Café</h1>
+
+{% for pc in ordinateurs %}
+<div class="pc">
+    <h3>PC {{ pc.numero }}</h3>
+
+    {% if pc.disponible %}
+        <p class="dispo">Disponible</p>
+        <a href="{% url 'start' pc.id %}">
+            <button>Démarrer</button>
+        </a>
+    {% else %}
+        <p class="occupe">Occupé</p>
+        <a href="{% url 'stop' pc.id %}">
+            <button>Arrêter</button>
+        </a>
+    {% endif %}
+</div>
+{% endfor %}
+
+</body>
+</html>
+
+{% endblock %}
