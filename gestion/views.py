@@ -2,25 +2,30 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Sum
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 from datetime import date, datetime
 import calendar
+import json
 
 from reportlab.pdfgen import canvas
 
 from .models import Activite, Depense
 
-from reportlab.pdfgen import canvas
-import json
+
+# ================= LOGOUT =================
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
 
+# ================= EXPORT PDF =================
 def export_pdf(request):
-
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="journal.pdf"'
 
     p = canvas.Canvas(response)
-
     y = 800
 
     p.drawString(200, 820, "JOURNAL CYBERCAFE")
@@ -28,39 +33,33 @@ def export_pdf(request):
     activites = Activite.objects.filter(date=date.today())
 
     for a in activites:
-
         line = f"{a.client} - {a.service} - {a.montant} FCFA"
-
         p.drawString(30, y, line)
 
         y -= 20
-
         if y < 50:
             p.showPage()
             y = 800
 
     p.save()
-
     return response
 
-def recherche(request):
 
+# ================= RECHERCHE =================
+def recherche(request):
     query = request.GET.get("q", "")
 
-    if query:
-        resultats = Activite.objects.filter(client__icontains=query)
-    else:
-        resultats = Activite.objects.none()
+    resultats = Activite.objects.filter(client__icontains=query) if query else Activite.objects.none()
 
     return render(request, "gestion/recherche.html", {
         "resultats": resultats,
         "query": query
     })
 
+
+# ================= DASHBOARD =================
 def dashboard(request):
-
     today = date.today()
-
     activites = Activite.objects.filter(date=today)
 
     total = activites.aggregate(Sum("montant"))["montant__sum"] or 0
@@ -71,6 +70,9 @@ def dashboard(request):
         "nb": nb
     })
 
+
+# ================= JOURNAL (UNIQUE VERSION) =================
+@login_required
 def journal(request):
 
     today = timezone.now().date()
@@ -80,7 +82,6 @@ def journal(request):
 
         # ===== DEPENSE =====
         if "save_depense" in request.POST:
-
             depense = request.POST.get("depense_jour")
 
             if depense:
@@ -103,12 +104,12 @@ def journal(request):
             except:
                 return default
 
-        prix_unitaire = safe_float(request.POST.get("prix_unitaire"), 0)
+        prix_unitaire = safe_float(request.POST.get("prix_unitaire"))
         quantite = safe_float(request.POST.get("quantite"), 1)
 
         montant_total_raw = request.POST.get("montant_total")
 
-        if montant_total_raw not in [None, "", " "]:
+        if montant_total_raw:
             montant = safe_float(montant_total_raw)
         else:
             montant = prix_unitaire * quantite
@@ -152,7 +153,6 @@ def journal(request):
     for week in cal:
         for day in week:
             if day != 0:
-
                 date_obj = datetime(annee, mois, day).date()
 
                 revenu = Activite.objects.filter(date=date_obj).aggregate(
@@ -185,85 +185,63 @@ def journal(request):
         "activites": activites,
         "total": total,
         "total_depenses": total_depenses,
-
         "calendrier": calendrier,
         "empty_start": empty_start,
         "empty_end": empty_end,
-
         "mois_nom": mois_nom,
         "annee": annee,
     })
 
-def supprimer_activite(request, id):
 
+# ================= SUPPRESSION =================
+def supprimer_activite(request, id):
     activite = get_object_or_404(Activite, id=id)
     activite.delete()
-
     return redirect("journal")
 
 
-
+# ================= HISTORIQUE =================
 def historique(request):
 
     today = timezone.now().date()
 
-    # ================= PARAMS =================
     mois = int(request.GET.get("mois", today.month))
     annee = int(request.GET.get("annee", today.year))
 
-    # sécurité mois
-    if mois < 1:
-        mois = 1
-    if mois > 12:
-        mois = 12
+    mois = max(1, min(mois, 12))
 
-    # ================= ACTIVITES (MOIS) =================
-    activites = Activite.objects.filter(
-        date__month=mois,
-        date__year=annee
-    )
+    activites = Activite.objects.filter(date__month=mois, date__year=annee)
 
-    total_revenu = activites.aggregate(
-        total=Sum("montant")
-    )["total"] or 0
+    total_revenu = activites.aggregate(total=Sum("montant"))["total"] or 0
 
     total_depense = Depense.objects.filter(
         date__month=mois,
         date__year=annee
-    ).aggregate(
-        total=Sum("montant")
-    )["total"] or 0
+    ).aggregate(total=Sum("montant"))["total"] or 0
 
     benefice = total_revenu - total_depense
 
-    # ================= KPI =================
     total_activites = activites.count()
     moyenne_jour = total_revenu / 30 if total_revenu else 0
 
-    # ================= TOP CLIENTS =================
     top_clients = activites.values("client").annotate(
         total=Sum("montant")
     ).order_by("-total")[:5]
 
-    # ================= MOIS PRECEDENT =================
-    prev_date = datetime(annee, mois, 1)
+    # mois précédent
     if mois == 1:
-        prev_month = 12
-        prev_year = annee - 1
+        prev_month, prev_year = 12, annee - 1
     else:
-        prev_month = mois - 1
-        prev_year = annee
+        prev_month, prev_year = mois - 1, annee
 
     prev_revenu = Activite.objects.filter(
         date__month=prev_month,
         date__year=prev_year
     ).aggregate(total=Sum("montant"))["total"] or 0
 
-    evolution = 0
-    if prev_revenu > 0:
-        evolution = ((total_revenu - prev_revenu) / prev_revenu) * 100
+    evolution = ((total_revenu - prev_revenu) / prev_revenu * 100) if prev_revenu else 0
 
-    # ================= CALENDRIER =================
+    # calendrier
     cal = calendar.monthcalendar(annee, mois)
 
     calendrier = []
@@ -273,9 +251,7 @@ def historique(request):
 
     for week in cal:
         for day in week:
-
             if day != 0:
-
                 date_obj = datetime(annee, mois, day).date()
 
                 revenu = Activite.objects.filter(date=date_obj).aggregate(
@@ -292,42 +268,27 @@ def historique(request):
                     "revenu": revenu,
                     "depense": depense,
                     "benefice": revenu - depense,
-                    "is_today": date_obj == today,
-                    "is_selected": False
+                    "is_today": date_obj == today
                 })
 
                 labels.append(str(day))
                 revenus_chart.append(revenu)
                 depenses_chart.append(depense)
 
-    # ================= CALENDRIER ALIGNEMENT =================
-    first_weekday = calendar.monthrange(annee, mois)[0]
+    empty_start = range(calendar.monthrange(annee, mois)[0])
+    total_cells = len(calendrier) + len(empty_start)
+    empty_end = range((7 - total_cells % 7) % 7)
 
-    empty_start = range(first_weekday)
-
-    total_cells = len(calendrier) + first_weekday
-    empty_end = range((7 - (total_cells % 7)) % 7)
-
-    # ================= CHART =================
     data_chart = {
         "labels": labels,
         "revenus": revenus_chart,
         "depenses": depenses_chart
     }
 
-    # ================= MOIS LIST (POUR DROPDOWN HTML) =================
-    mois_list = [
-        {"value": i, "label": calendar.month_name[i]}
-        for i in range(1, 13)
-    ]
-
-    # ================= ANNEES LIST =================
+    mois_list = [{"value": i, "label": calendar.month_name[i]} for i in range(1, 13)]
     annees_list = list(range(2023, today.year + 1))
 
-    # ================= RETURN =================
     return render(request, "gestion/historique.html", {
-
-        # KPI
         "total_revenu": total_revenu,
         "total_depense": total_depense,
         "benefice": benefice,
@@ -335,27 +296,21 @@ def historique(request):
         "moyenne_jour": moyenne_jour,
         "evolution": evolution,
         "top_clients": top_clients,
-
-        # CALENDAR
         "calendrier": calendrier,
         "empty_start": empty_start,
         "empty_end": empty_end,
-
-        # NAVIGATION
         "mois": mois,
         "annee": annee,
         "mois_list": mois_list,
         "annees_list": annees_list,
-
-        # CHART
         "data_chart": json.dumps(data_chart),
     })
 
 
+# ================= DETAILS JOURNAL =================
 def journal_details(request):
     date_str = request.GET.get("date")
 
-    # ⚠️ FIX FORMAT DATE (très important)
     try:
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
     except:
