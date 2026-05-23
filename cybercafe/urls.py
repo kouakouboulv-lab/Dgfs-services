@@ -5,6 +5,8 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),   # ✅ admin fonctionne
     path('', include('gestion.urls')), # ✅ ton app
-     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/login/', auth_views.LoginView.as_view(
+        template_name='registration/login.html'
+    ), name='login'),
 
 ]
