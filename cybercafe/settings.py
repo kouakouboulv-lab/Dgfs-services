@@ -15,7 +15,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    ".onrender.com",   # ✅ IMPORTANT (corrige ton 400)
+    ".onrender.com",
 ]
 
 
@@ -39,7 +39,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
 
-    # ✅ IMPORTANT (Render + login stabilité)
     'django.middleware.csrf.CsrfViewMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -55,7 +54,7 @@ ROOT_URLCONF = 'cybercafe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # OK si templates dans apps
+        'DIRS': [],  # templates dans apps
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +79,7 @@ DATABASES = {
 }
 
 
-# ================= PASSWORDS =================
+# ================= PASSWORD VALIDATION =================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -96,16 +95,26 @@ USE_I18N = True
 USE_TZ = True
 
 
-# ================= STATIC =================
+# ================= STATIC FILES (IMPORTANT LOGO FIX) =================
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "gestion/static",   # ✅ CORRECT (important pour ton logo)
+]
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # ================= LOGIN SYSTEM =================
 LOGIN_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/journal/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 
-# ================= IMPORTANT RENDER FIX =================
+# ⚠️ IMPORTANT (sinon tu perds login en fermant navigateur)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 jours
+
+
+# ================= RENDER FIX =================
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

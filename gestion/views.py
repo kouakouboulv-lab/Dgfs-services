@@ -2,26 +2,47 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Sum
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 
 from datetime import date, datetime
 import calendar
 import json
 
 from reportlab.pdfgen import canvas
-
 from .models import Activite, Depense
+from django.contrib.auth.decorators import login_required
+
+
+# ================= LOGIN =================
+def login_user(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect("journal")
+        else:
+            return render(request, "registration/login.html", {
+                "error": "Identifiants incorrects"
+            })
+
+    return render(request, "registration/login.html")
 
 
 # ================= LOGOUT =================
 def logout_user(request):
     logout(request)
-    return redirect('login')
+    return redirect("login")
 
 
 # ================= EXPORT PDF =================
 def export_pdf(request):
+
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="journal.pdf"'
 
@@ -35,8 +56,8 @@ def export_pdf(request):
     for a in activites:
         line = f"{a.client} - {a.service} - {a.montant} FCFA"
         p.drawString(30, y, line)
-
         y -= 20
+
         if y < 50:
             p.showPage()
             y = 800
@@ -46,7 +67,9 @@ def export_pdf(request):
 
 
 # ================= RECHERCHE =================
+@login_required
 def recherche(request):
+
     query = request.GET.get("q", "")
 
     resultats = Activite.objects.filter(client__icontains=query) if query else Activite.objects.none()
@@ -58,7 +81,9 @@ def recherche(request):
 
 
 # ================= DASHBOARD =================
+@login_required
 def dashboard(request):
+
     today = date.today()
     activites = Activite.objects.filter(date=today)
 
@@ -71,7 +96,7 @@ def dashboard(request):
     })
 
 
-# ================= JOURNAL (UNIQUE VERSION) =================
+# ================= JOURNAL =================
 @login_required
 def journal(request):
 
@@ -82,6 +107,7 @@ def journal(request):
 
         # ===== DEPENSE =====
         if "save_depense" in request.POST:
+
             depense = request.POST.get("depense_jour")
 
             if depense:
@@ -104,12 +130,12 @@ def journal(request):
             except:
                 return default
 
-        prix_unitaire = safe_float(request.POST.get("prix_unitaire"))
+        prix_unitaire = safe_float(request.POST.get("prix_unitaire"), 0)
         quantite = safe_float(request.POST.get("quantite"), 1)
 
         montant_total_raw = request.POST.get("montant_total")
 
-        if montant_total_raw:
+        if montant_total_raw not in [None, "", " "]:
             montant = safe_float(montant_total_raw)
         else:
             montant = prix_unitaire * quantite
@@ -153,6 +179,7 @@ def journal(request):
     for week in cal:
         for day in week:
             if day != 0:
+
                 date_obj = datetime(annee, mois, day).date()
 
                 revenu = Activite.objects.filter(date=date_obj).aggregate(
@@ -195,12 +222,15 @@ def journal(request):
 
 # ================= SUPPRESSION =================
 def supprimer_activite(request, id):
+
     activite = get_object_or_404(Activite, id=id)
     activite.delete()
+
     return redirect("journal")
 
 
 # ================= HISTORIQUE =================
+@login_required
 def historique(request):
 
     today = timezone.now().date()
@@ -252,6 +282,7 @@ def historique(request):
     for week in cal:
         for day in week:
             if day != 0:
+
                 date_obj = datetime(annee, mois, day).date()
 
                 revenu = Activite.objects.filter(date=date_obj).aggregate(
@@ -268,7 +299,8 @@ def historique(request):
                     "revenu": revenu,
                     "depense": depense,
                     "benefice": revenu - depense,
-                    "is_today": date_obj == today
+                    "is_today": date_obj == today,
+                    "is_selected": False
                 })
 
                 labels.append(str(day))
@@ -309,6 +341,7 @@ def historique(request):
 
 # ================= DETAILS JOURNAL =================
 def journal_details(request):
+
     date_str = request.GET.get("date")
 
     try:
