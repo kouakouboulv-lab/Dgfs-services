@@ -28,7 +28,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    ".onrender.com"
+    "cybercafe.onrender.com"
 ]
 
 
@@ -124,5 +124,5 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
