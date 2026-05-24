@@ -10,13 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ================= SECURITY =================
 SECRET_KEY = 'django-insecure-8!12c)pcag-$=gj@_2$$dljw%lci=@6fmjg3u=phbx=@402i-6'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    ".onrender.com",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # ================= APPS =================
@@ -99,7 +95,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "gestion/static",   # ✅ CORRECT (important pour ton logo)
+    BASE_DIR / "static"   # ✅ CORRECT (important pour ton logo)
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
