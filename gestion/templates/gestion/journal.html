@@ -5,30 +5,45 @@
 
 <style>
 
-/* ================= GLOBAL ================= */
-
-body{
-    background:#f5f7fb;
+:root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#0f172a;
+    --text-light:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
+body{
+    background:linear-gradient(to bottom right,#f8fbff,#eef4ff);
+}
+
+/* ================= PAGE ================= */
+
 .page-title{
-    font-size:28px;
-    font-weight:700;
-    color:#0d6efd;
-    margin-bottom:20px;
+    font-size:34px;
+    font-weight:800;
+    color:var(--text);
+    margin-bottom:25px;
+}
+
+.page-subtitle{
+    color:var(--text-light);
+    margin-top:-10px;
+    margin-bottom:30px;
 }
 
 /* ================= LAYOUT ================= */
 
 .journal-layout{
-    display:flex;
+    display:grid;
+    grid-template-columns:1.0fr 1.0fr;
     gap:25px;
-    align-items:flex-start;
-}
-
-.left-side,
-.right-side{
-    width:50%;
+    align-items:start;
 }
 
 .right-side{
@@ -39,95 +54,196 @@ body{
 /* ================= CARD ================= */
 
 .card-pro{
-    background:white;
-    border-radius:18px;
-    box-shadow:0 4px 15px rgba(13,110,253,0.08);
-    margin-bottom:20px;
-    border:none;
+    background:var(--card);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    margin-bottom:25px;
+    overflow:hidden;
+    position:relative;
+}
+
+.card-pro::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(
+        to right,
+        var(--primary),
+        #60a5fa
+    );
 }
 
 .card-body{
-    padding:20px;
+    padding:25px;
 }
 
 /* ================= FORM ================= */
 
 .label{
-    font-weight:600;
-    color:#495057;
-    margin-bottom:6px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+    font-size:14px;
 }
 
-/* ================= BUTTON ================= */
+.form-control,
+.form-select{
+    border-radius:14px;
+    border:1px solid var(--border);
+    padding:13px;
+    background:#f8fafc;
+    transition:0.3s;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+    background:white;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn{
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    font-weight:700;
+    transition:0.25s;
+}
 
 .btn-primary{
-    background:#0d6efd;
-    border:none;
-    border-radius:10px;
+    background:linear-gradient(
+        to right,
+        var(--primary),
+        #3b82f6
+    );
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    background:linear-gradient(
+        to right,
+        var(--primary-dark),
+        var(--primary)
+    );
 }
 
 .btn-danger{
-    border-radius:10px;
+    background:var(--danger);
+}
+
+.btn-danger:hover{
+    transform:scale(1.03);
 }
 
 /* ================= TABLE ================= */
 
 .table-scroll{
-    max-height:450px;
-    overflow-y:auto;
+    max-height:500px;
+    overflow:auto;
+}
+
+.table{
+    margin:0;
 }
 
 .table thead{
     position:sticky;
     top:0;
-    background:#0d6efd;
-    color:white;
     z-index:2;
 }
 
-.table tbody tr:hover{
-    background:rgba(13,110,253,0.05);
+.table thead th{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:16px;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
 }
 
-/* ================= TOTAL ================= */
-
-.total{
+.table tbody td{
     padding:16px;
-    border-radius:14px;
-    background:#16a34a;
+    vertical-align:middle;
+    border-color:#f1f5f9;
+}
+
+.table tbody tr{
+    transition:0.2s;
+}
+
+.table tbody tr:hover{
+    background:#f8fbff;
+}
+
+/* ================= TOTAL BOX ================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.total,
+.total-box{
+    padding:22px;
+    border-radius:20px;
     color:white;
     text-align:center;
-    font-size:18px;
-    font-weight:600;
+}
+
+.total{
+    background:linear-gradient(
+        to right,
+        #16a34a,
+        #22c55e
+    );
 }
 
 .total-box{
-    padding:16px;
-    border-radius:14px;
-    background:#dc3545;
-    color:white;
-    text-align:center;
-    font-size:18px;
-    font-weight:600;
-    margin-top:15px;
+    background:linear-gradient(
+        to right,
+        #dc2626,
+        #ef4444
+    );
+}
+
+.total-label{
+    font-size:14px;
+    opacity:0.9;
+}
+
+.total-value{
+    font-size:28px;
+    font-weight:800;
+    margin-top:8px;
 }
 
 /* ================= CALENDAR ================= */
 
 .calendar-card{
     background:white;
-    border-radius:18px;
-    box-shadow:0 4px 15px rgba(13,110,253,0.08);
+    border-radius:24px;
     overflow:hidden;
+    box-shadow:var(--shadow);
 }
 
 .calendar-header{
-    background:#0d6efd;
+    background:linear-gradient(
+        to right,
+        var(--primary),
+        #3b82f6
+    );
     color:white;
-    padding:15px;
+    padding:20px;
     text-align:center;
-    font-size:20px;
-    font-weight:700;
+    font-size:22px;
+    font-weight:800;
 }
 
 .calendar-grid{
@@ -139,19 +255,20 @@ body{
 
 .day-name{
     text-align:center;
-    font-weight:700;
-    color:#6c757d;
+    font-weight:800;
+    color:#64748b;
     padding:10px 0;
+    font-size:13px;
 }
 
 .calendar-empty{
-    min-height:85px;
+    min-height:95px;
 }
 
 .calendar-day{
-    background:#f8f9fa;
-    border-radius:14px;
-    min-height:90px;
+    background:#f8fafc;
+    border-radius:18px;
+    min-height:95px;
 
     display:flex;
     flex-direction:column;
@@ -160,39 +277,39 @@ body{
 
     cursor:pointer;
     transition:0.25s;
-
-    border:1px solid transparent;
-    text-align:center;
+    border:2px solid transparent;
+    position:relative;
 }
 
 .calendar-day:hover{
-    transform:translateY(-2px);
-    border-color:#0d6efd;
+    transform:translateY(-3px);
     background:white;
-    box-shadow:0 6px 14px rgba(13,110,253,0.12);
+    border-color:var(--primary);
+    box-shadow:0 10px 20px rgba(37,99,235,0.15);
 }
 
 .day-number{
+    font-size:20px;
     font-weight:800;
-    font-size:18px;
-    color:#0d6efd;
+    color:var(--primary);
 }
 
 .day-total{
+    margin-top:6px;
+    padding:4px 8px;
+    border-radius:10px;
+    background:#e9f9ef;
+    color:var(--success);
     font-size:12px;
     font-weight:700;
-    color:#16a34a;
-    background:#e9f9ef;
-    padding:3px 6px;
-    border-radius:8px;
 }
 
 .today{
-    border:2px solid #16a34a;
+    border:2px solid var(--success);
 }
 
 .selected{
-    border:2px solid #0d6efd;
+    border:2px solid var(--primary);
     background:#eef5ff;
 }
 
@@ -201,171 +318,272 @@ body{
 .modal-overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.55);
 
     display:none;
     justify-content:center;
     align-items:center;
 
     z-index:9999;
+    backdrop-filter:blur(4px);
 }
 
 .modal-box{
-    width:650px;
+    width:700px;
     max-width:95%;
     max-height:85vh;
-
     overflow-y:auto;
 
     background:white;
-    border-radius:20px;
-    padding:20px;
+    border-radius:24px;
+    padding:25px;
 
-    animation:pop 0.2s ease;
+    animation:popup 0.25s ease;
 }
 
-@keyframes pop{
-    from{transform:scale(0.9);opacity:0;}
-    to{transform:scale(1);opacity:1;}
+@keyframes popup{
+    from{
+        opacity:0;
+        transform:scale(0.92);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
 }
 
 .modal-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:15px;
+    margin-bottom:20px;
 }
 
 .close-btn{
-    width:40px;
-    height:40px;
+    width:42px;
+    height:42px;
     border:none;
     border-radius:50%;
-    background:#dc3545;
+    background:var(--danger);
     color:white;
     cursor:pointer;
+    transition:0.2s;
+}
+
+.close-btn:hover{
+    transform:rotate(90deg);
 }
 
 .modal-item{
-    background:#f8f9fa;
-    padding:12px;
-    border-radius:12px;
-    margin-bottom:10px;
+    background:#f8fafc;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
 }
 
 .modal-client{
-    font-weight:700;
+    font-weight:800;
+    color:var(--text);
 }
 
 .modal-service{
-    color:#6c757d;
+    color:var(--text-light);
+    margin-top:4px;
 }
 
 .modal-total{
-    color:#16a34a;
-    font-weight:700;
+    margin-top:8px;
+    color:var(--success);
+    font-weight:800;
 }
 
 /* ================= RESPONSIVE ================= */
 
 @media(max-width:992px){
-    .journal-layout{
-        flex-direction:column;
-    }
 
-    .left-side,
-    .right-side{
-        width:100%;
+    .journal-layout{
+        grid-template-columns:1fr;
     }
 
     .right-side{
         position:relative;
+        top:0;
     }
+
+}
+
+@media(max-width:600px){
+
+    .page-title{
+        font-size:26px;
+    }
+
+    .card-body{
+        padding:18px;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .calendar-grid{
+        gap:6px;
+    }
+
+    .calendar-day{
+        min-height:75px;
+    }
+
+    .day-number{
+        font-size:16px;
+    }
+
 }
 
 </style>
 
-<div style="width:100%">
+<div class="container-fluid py-3">
 
     <div class="page-title">
         📒 Journal du Cybercafé
     </div>
 
+    <div class="page-subtitle">
+        Gestion moderne des activités et revenus journaliers.
+    </div>
+
     <div class="journal-layout">
 
         <!-- ================= LEFT ================= -->
+
         <div class="left-side">
 
             <!-- FORM -->
+
             <div class="card-pro">
+
                 <div class="card-body">
 
                     <form method="POST">
+
                         {% csrf_token %}
 
                         <div class="row g-3">
 
                             <div class="col-md-3">
                                 <div class="label">Client</div>
-                                <input type="text" name="client" class="form-control" required>
+
+                                <input type="text"
+                                       name="client"
+                                       class="form-control"
+                                       required>
                             </div>
 
                             <div class="col-md-3">
+
                                 <div class="label">Service</div>
-                                <select name="service" class="form-select" required>
-                                    <option value="impression">🖨 Impression</option>
-                                    <option value="inscription">📝 Inscription</option>
-                                    <option value="photo">📸 Photo</option>
-                                    <option value="carnet">📘 Carnet</option>
-                                    <option value="autre">🔧 Autre</option>
+
+                                <select name="service"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="impression">
+                                        🖨 Impression
+                                    </option>
+
+                                    <option value="inscription">
+                                        📝 Inscription
+                                    </option>
+
+                                    <option value="photo">
+                                        📸 Photo
+                                    </option>
+
+                                    <option value="carnet">
+                                        📘 Carnet
+                                    </option>
+
+                                    <option value="autre">
+                                        🔧 Autre
+                                    </option>
+
                                 </select>
+
                             </div>
 
                             <div class="col-md-2">
+
                                 <div class="label">PU</div>
-                                <input type="number" name="prix_unitaire" class="form-control">
+
+                                <input type="number"
+                                       name="prix_unitaire"
+                                       class="form-control">
+
                             </div>
 
                             <div class="col-md-2">
+
                                 <div class="label">Qté</div>
-                                <input type="number" name="quantite" class="form-control" value="1">
+
+                                <input type="number"
+                                       name="quantite"
+                                       class="form-control"
+                                       value="1">
+
                             </div>
 
                             <div class="col-md-2">
+
                                 <div class="label">Total</div>
-                                <input type="number" name="montant_total" class="form-control">
+
+                                <input type="number"
+                                       name="montant_total"
+                                       class="form-control">
+
                             </div>
 
                         </div>
 
-                        <button class="btn btn-primary w-100 mt-3">
+                        <button class="btn btn-primary w-100 mt-4">
                             ➕ Ajouter activité
                         </button>
 
                     </form>
 
                 </div>
+
             </div>
 
             <!-- DEPENSE -->
+
             <div class="card-pro">
+
                 <div class="card-body">
 
                     <form method="POST">
+
                         {% csrf_token %}
 
-                        <div class="row g-2">
+                        <div class="row g-3">
 
                             <div class="col-md-8">
-                                <input type="number" name="depense_jour"
+
+                                <input type="number"
+                                       name="depense_jour"
                                        class="form-control"
-                                       placeholder="💸 Dépense">
+                                       placeholder="💸 Ajouter une dépense">
+
                             </div>
 
                             <div class="col-md-4">
-                                <button class="btn btn-danger w-100" name="save_depense">
+
+                                <button class="btn btn-danger w-100"
+                                        name="save_depense">
+
                                     Enregistrer
+
                                 </button>
+
                             </div>
 
                         </div>
@@ -373,61 +591,119 @@ body{
                     </form>
 
                 </div>
+
             </div>
 
             <!-- TABLE -->
+
             <div class="card-pro">
+
                 <div class="card-body table-scroll">
 
-                    <table class="table table-hover align-middle">
+                    <table class="table align-middle">
 
                         <thead>
+
                             <tr>
                                 <th>Heure</th>
                                 <th>Client</th>
                                 <th>Service</th>
                                 <th>Total</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
+
                         </thead>
 
                         <tbody>
+
                         {% for a in activites %}
+
                             <tr>
+
                                 <td>{{ a.heure }}</td>
-                                <td>{{ a.client }}</td>
-                                <td>{{ a.service }}</td>
-                                <td><strong>{{ a.montant }} FCFA</strong></td>
+
                                 <td>
+                                    <strong>{{ a.client }}</strong>
+                                </td>
+
+                                <td>{{ a.service }}</td>
+
+                                <td>
+                                    <strong>
+                                        {{ a.montant }} FCFA
+                                    </strong>
+                                </td>
+
+                                <td>
+
                                     <a href="{% url 'supprimer_activite' a.id %}"
-                                       class="btn btn-danger btn-sm">🗑</a>
+                                       class="btn btn-danger btn-sm">
+
+                                        🗑
+
+                                    </a>
+
                                 </td>
+
                             </tr>
+
                         {% empty %}
+
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
-                                    Aucune activité
+
+                                <td colspan="5"
+                                    class="text-center text-muted py-4">
+
+                                    Aucune activité enregistrée
+
                                 </td>
+
                             </tr>
+
                         {% endfor %}
+
                         </tbody>
 
                     </table>
 
                 </div>
+
             </div>
 
-            <div class="total">
-                💰 Total : {{ total }} FCFA
-            </div>
+            <!-- TOTALS -->
 
-            <div class="total-box">
-                💸 Dépenses : {{ total_depenses }} FCFA
+            <div class="stats-grid">
+
+                <div class="total">
+
+                    <div class="total-label">
+                        💰 Revenus
+                    </div>
+
+                    <div class="total-value">
+                        {{ total }} FCFA
+                    </div>
+
+                </div>
+
+                <div class="total-box">
+
+                    <div class="total-label">
+                        💸 Dépenses
+                    </div>
+
+                    <div class="total-value">
+                        {{ total_depenses }} FCFA
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
         <!-- ================= RIGHT ================= -->
+
         <div class="right-side">
 
             <div class="calendar-card">
@@ -455,15 +731,16 @@ body{
                         <div class="calendar-day calendar-click
                             {% if day.is_today %}today{% endif %}
                             {% if day.is_selected %}selected{% endif %}"
+
                             data-date="{{ day.date|date:'Y-m-d' }}">
 
-                            <div class="day-number">{{ day.numero }}</div>
+                            <div class="day-number">
+                                {{ day.numero }}
+                            </div>
 
-                            {% if day.total > 0 %}
-                                <div class="day-total">{{ day.total }} FCFA</div>
-                            {% else %}
-                                <div class="day-total">0 FCFA</div>
-                            {% endif %}
+                            <div class="day-total">
+                                {{ day.total }} FCFA
+                            </div>
 
                         </div>
 
@@ -484,13 +761,25 @@ body{
 </div>
 
 <!-- ================= MODAL ================= -->
-<div id="dayModal" class="modal-overlay">
+
+<div id="dayModal"
+     class="modal-overlay">
 
     <div class="modal-box">
 
         <div class="modal-header">
-            <h3 id="modalTitle">📅 Détails</h3>
-            <button class="close-btn" onclick="closeModal()">✖</button>
+
+            <h3 id="modalTitle">
+                📅 Détails
+            </h3>
+
+            <button class="close-btn"
+                    onclick="closeModal()">
+
+                ✖
+
+            </button>
+
         </div>
 
         <div id="modalBody"></div>
@@ -522,22 +811,51 @@ document.querySelectorAll(".calendar-click").forEach(el => {
 
         let html = "";
 
-        if (data.activites.length === 0) {
-            html = "<p style='text-align:center'>Aucune activité</p>";
-        } else {
+        if(data.activites.length === 0){
+
+            html = `
+                <div class="text-center text-muted py-4">
+                    Aucune activité
+                </div>
+            `;
+
+        }else{
 
             data.activites.forEach(a => {
+
                 html += `
                     <div class="modal-item">
-                        <div class="modal-client">${a.client}</div>
-                        <div class="modal-service">${a.service}</div>
-                        <div class="modal-total">${a.montant} FCFA</div>
+
+                        <div class="modal-client">
+                            ${a.client}
+                        </div>
+
+                        <div class="modal-service">
+                            ${a.service}
+                        </div>
+
+                        <div class="modal-total">
+                            ${a.montant} FCFA
+                        </div>
+
                     </div>
                 `;
+
             });
+
         }
 
-        html += `<hr><div class="total">💰 Total : ${data.total}</div>`;
+        html += `
+            <div class="total mt-3">
+                <div class="total-label">
+                    💰 Total journalier
+                </div>
+
+                <div class="total-value">
+                    ${data.total} FCFA
+                </div>
+            </div>
+        `;
 
         modalBody.innerHTML = html;
 
@@ -550,9 +868,11 @@ function closeModal(){
 }
 
 window.onclick = function(e){
+
     if(e.target === modal){
         closeModal();
     }
+
 }
 
 </script>

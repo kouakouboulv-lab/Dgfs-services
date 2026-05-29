@@ -1,9 +1,11 @@
 """
 Django settings for cybercafe project.
 """
-
+import os
 from pathlib import Path
 import dj_database_url
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -73,9 +75,10 @@ WSGI_APPLICATION = 'cybercafe.wsgi.application'
 
 # ================= DATABASE =================
 
+
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600
     )
 }
@@ -120,3 +123,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 jours
 
 # ================= RENDER FIX =================
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com"
+]

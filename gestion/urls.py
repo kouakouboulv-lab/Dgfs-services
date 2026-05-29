@@ -9,23 +9,24 @@ def home(request):
     if request.user.is_authenticated:
         return redirect("journal")
 
-    return redirect("/accounts/login/")
+    return redirect("login")
 
 
 # ================= URLS =================
 urlpatterns = [
 
     # HOME
-    path("", home),
+    path("", home, name="home"),
 
     # JOURNAL
     path("journal/", views.journal, name="journal"),
 
-    # DASHBOARD
-    path("dashboard/", views.dashboard, name="dashboard"),
-
-    # RECHERCHE
-    path("recherche/", views.recherche, name="recherche"),
+    # MISE A JOUR REGISTRE
+    path(
+        "mise-a-jour/",
+        views.mise_a_jour_registre,
+        name="mise_a_jour_registre"
+    ),
 
     # HISTORIQUE
     path("historique/", views.historique, name="historique"),
@@ -33,6 +34,10 @@ urlpatterns = [
     # EXPORT PDF
     path("export/pdf/", views.export_pdf, name="export_pdf"),
 
+    path("delete-temp/<int:id>/", views.delete_temp, name="delete_temp"),
+
+    path("statistiques/", views.statistiques, name="statistiques"),
+    
     # SUPPRESSION
     path(
         "supprimer/<int:id>/",

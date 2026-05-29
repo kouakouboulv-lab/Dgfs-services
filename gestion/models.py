@@ -1,9 +1,16 @@
 from django.db import models
 from datetime import date
+from django.utils import timezone
+
 
 class Depense(models.Model):
+
     libelle = models.CharField(max_length=200)
+
     montant = models.IntegerField()
+    
+    motif = models.CharField(max_length=255, blank=True, null=True)
+
     date = models.DateField(default=date.today)
 
     def __str__(self):
@@ -20,25 +27,66 @@ class Activite(models.Model):
         ("autre", "Autre"),
     ]
 
-    client = models.CharField(max_length=100)
-    service = models.CharField(max_length=20, choices=SERVICE_CHOICES)
+    # ================= INFOS CLIENT =================
 
-    prix_unitaire = models.IntegerField(default=0)
-    quantite = models.IntegerField(default=1)
+    client = models.CharField(
+        max_length=100
+    )
 
-    montant = models.IntegerField(default=0)
+    service = models.CharField(
+        max_length=20,
+        choices=SERVICE_CHOICES
+    )
 
-    details = models.TextField(blank=True)
+    details = models.TextField(
+        blank=True
+    )
 
-    depense = models.IntegerField(default=0)
+    # ================= TARIFICATION =================
 
-    date = models.DateField(default=date.today)
-    heure = models.TimeField(auto_now_add=True)
+    prix_unitaire = models.IntegerField(
+        default=0
+    )
+
+    quantite = models.IntegerField(
+        default=1
+    )
+
+    montant = models.IntegerField(
+        default=0
+    )
+
+    # ================= DEPENSE =================
+
+    depense = models.IntegerField(
+        default=0
+    )
+
+    # ================= DATE & HEURE =================
+
+    # permet d'enregistrer des anciennes activités
+    date = models.DateField(
+        default=date.today
+    )
+
+    # IMPORTANT :
+    # auto_now_add=True empêche de choisir l'heure manuellement
+    # donc on utilise timezone.now
+    heure = models.TimeField(
+        default=timezone.now
+    )
+
+    # ================= SAVE =================
 
     def save(self, *args, **kwargs):
-        # 💰 calcul automatique du montant
+
+        # calcul automatique
         self.montant = self.prix_unitaire * self.quantite
+
         super().save(*args, **kwargs)
 
+    # ================= AFFICHAGE =================
+
     def __str__(self):
+
         return f"{self.client} - {self.service}"
