@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from django.utils import timezone
 
-
+   
 class Depense(models.Model):
 
     libelle = models.CharField(max_length=200)
@@ -16,25 +16,61 @@ class Depense(models.Model):
     def __str__(self):
         return self.libelle
 
+class PaiementJour(models.Model):
 
+    date = models.DateField(unique=True)
+
+    mobile_money = models.IntegerField(default=0)
+
+    especes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.date)
+    
 class Activite(models.Model):
 
     SERVICE_CHOICES = [
+
         ("impression", "Impression"),
+        ("photocopie_bn", "Photocopie Blanc/Noir"),
+        ("photocopie_couleur", "Photocopie Couleur"),
         ("inscription", "Inscription"),
-        ("photo", "Photo minute"),
+        ("traitement_texte", "Traitement de texte"),
+        ("creation_cv", "Création CV"),
+        ("lettre_motivation", "Lettre de motivation"),
+        ("convocation", "Impression convocation"),
+        ("paiement", "Paiement"),
+        ("confection_document", "Confection document"),
+        ("modification_document", "Modification document"),
+        ("photo_minute", "Photo minute"),
+        ("envoi_document", "Envoi document"),
+        ("carte_pvc", "Carte PVC"),
         ("carnet", "Carnet"),
         ("autre", "Autre"),
+
     ]
+
+    MODE_PAIEMENT_CHOICES = [
+        ("mobile_money", "Mobile Money"),
+        ("especes", "Espèces"),
+    ]
+
+    mode_paiement = models.CharField(
+        max_length=20,
+        choices=MODE_PAIEMENT_CHOICES,
+        default="especes"
+    )
 
     # ================= INFOS CLIENT =================
 
     client = models.CharField(
-        max_length=100
+        max_length=100,
+        blank=True,
+        default=""
     )
 
     service = models.CharField(
-        max_length=20,
+        max_length=50,
         choices=SERVICE_CHOICES
     )
 
@@ -80,8 +116,12 @@ class Activite(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # calcul automatique
-        self.montant = self.prix_unitaire * self.quantite
+        if (
+            self.montant in [None, 0]
+            and self.prix_unitaire > 0
+            and self.quantite > 0
+        ):
+            self.montant = self.prix_unitaire * self.quantite
 
         super().save(*args, **kwargs)
 

@@ -33,6 +33,13 @@ INSTALLED_APPS = [
 
     'gestion',
     'accounts',
+    "django.contrib.sites",
+
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+
+    "allauth.socialaccount.providers.google",
 ]
 
 
@@ -44,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -53,6 +61,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'cybercafe.urls'
 
+SITE_ID = 1
 
 # ================= TEMPLATES =================
 TEMPLATES = [
@@ -65,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "gestion.context_processors.role_user",
             ],
         },
     },
@@ -121,6 +131,10 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 jours
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # ================= RENDER FIX =================
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

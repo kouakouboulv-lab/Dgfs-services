@@ -1,0 +1,307 @@
+{% extends "gestion/html/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet"
+    href="{% static 'gestion/css/historique.css' %}">
+<link rel="stylesheet" 
+    href="{% static 'gestion/css/modal.css' %}">
+
+
+<div class="dashboard">
+
+
+    <!-- ================= TITLE ================= -->
+
+    <div class="page-title">
+        📊 Tableau de bord
+    </div>
+
+    <div class="page-subtitle">
+        Suivi des revenus, dépenses et performances du cybercafé.
+    </div>
+
+    <!-- ================= KPI ================= -->
+
+    <div class="kpi-grid">
+
+        <div class="kpi-card revenu">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon">
+                    💰
+                </div>
+
+                <div class="kpi-label">
+                    Revenus
+                </div>
+
+            </div>
+
+            <div class="kpi-amount">
+                {{ total_revenu }} FCFA
+            </div>
+
+            <div class="kpi-footer">
+                Total du mois
+            </div>
+
+        </div>
+
+        <div class="kpi-card depense">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon">
+                    💸
+                </div>
+
+                <div class="kpi-label">
+                    Dépenses
+                </div>
+
+            </div>
+
+            <div class="kpi-amount">
+                {{ total_depense }} FCFA
+            </div>
+
+            <div class="kpi-footer">
+                Charges du mois
+            </div>
+
+        </div>
+
+        <div class="kpi-card benefice">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon">
+                    📈
+                </div>
+
+                <div class="kpi-label">
+                    Bénéfice
+                </div>
+
+            </div>
+
+            <div class="kpi-amount">
+                {{ benefice }} FCFA
+            </div>
+
+            <div class="kpi-footer">
+                Résultat net
+            </div>
+
+        </div>
+
+        <div class="kpi-card mobile">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon">
+                    💳
+                </div>
+
+                <div class="kpi-label">
+                    Mobile Money
+                </div>
+
+            </div>
+
+            <div class="kpi-amount">
+                {{ total_mobile }} FCFA
+            </div>
+
+            <div class="kpi-footer">
+                Paiements mobiles
+            </div>
+
+        </div>
+
+        <div class="kpi-card cash">
+
+            <div class="kpi-top">
+
+                <div class="kpi-icon">
+                    💵
+                </div>
+
+                <div class="kpi-label">
+                    Espèces
+                </div>
+
+            </div>
+
+            <div class="kpi-amount">
+                {{ total_cash }} FCFA
+            </div>
+
+            <div class="kpi-footer">
+                Paiements cash
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ================= LAYOUT ================= -->
+
+    <div class="dashboard-layout">
+
+        <!-- ================= CALENDAR ================= -->
+
+        <div class="card-pro">
+
+            <div class="calendar-header">
+
+                <div class="calendar-title">
+                    📅 Historique
+                </div>
+
+                <!-- FILTERS -->
+
+                <div class="calendar-filters">
+
+                    <select id="monthSelect"
+                            onchange="goToDate()">
+
+                        {% for m in mois_list %}
+
+                            <option value="{{ m.value }}"
+                                {% if m.value == mois %}selected{% endif %}>
+
+                                {{ m.label }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <select id="yearSelect"
+                            onchange="goToDate()">
+
+                        {% for y in annees_list %}
+
+                            <option value="{{ y }}"
+                                {% if y == annee %}selected{% endif %}>
+
+                                {{ y }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- GRID -->
+
+            <div class="calendar-grid">
+
+                <div class="day-name">Lun</div>
+                <div class="day-name">Mar</div>
+                <div class="day-name">Mer</div>
+                <div class="day-name">Jeu</div>
+                <div class="day-name">Ven</div>
+                <div class="day-name">Sam</div>
+                <div class="day-name">Dim</div>
+
+                {% for _ in empty_start %}
+                    <div class="calendar-empty"></div>
+                {% endfor %}
+
+                {% for d in calendrier %}
+
+                    <div class="calendar-day calendar-click
+                        {% if d.is_today %}today{% endif %}
+                        {% if d.is_selected %}selected{% endif %}"
+
+                        data-date="{{ d.date|date:'Y-m-d' }}">
+
+                        <div class="day-number">
+                            {{ d.numero }}
+                        </div>
+
+                        <div class="day-total">
+                            {{ d.revenu }} FCFA
+                        </div>
+                        
+
+                    </div>
+
+                {% endfor %}
+
+                {% for _ in empty_end %}
+                    <div class="calendar-empty"></div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- ================= CHART ================= -->
+
+        <div class="chart-box">
+
+            <div class="chart-title">
+                📈 Évolution de l'entreprise
+            </div>
+
+            <div class="chart-wrapper">
+
+                <canvas id="chart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+
+<div class="modal-overlay" id="dayModal" onclick="overlayClose(event)">
+
+    <div class="modal-card" role="dialog" aria-modal="true">
+
+        <div class="modal-top">
+
+            <h3 id="modalTitle">
+                📅 Détails du jour
+            </h3>
+
+            <button
+                class="modal-close"
+                onclick="closeModal()"
+                aria-label="Fermer le modal">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="modalBody">
+            <!-- contenu dynamique -->
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= JS ================= -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ data_chart|json_script:"chart-data" }}
+
+<script src="{% static 'js/historique.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+
+{% endblock %}

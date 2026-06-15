@@ -1,0 +1,344 @@
+{% extends "gestion/html/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'gestion/css/journal.css' %}">
+<link rel="stylesheet" 
+    href="{% static 'gestion/css/modal.css' %}">
+<div class="container-fluid py-3">
+
+    <!-- ================= HEADER ================= -->
+   <div class="title-row">
+
+        <div class="page-title">
+            📒 Journal du Cybercafé
+        </div>
+
+        <div class="kpi-grid">
+
+            <div class="mini-stat revenue">
+                <small>💰 Revenus</small>
+                <strong>{{ total }} FCFA</strong>
+            </div>
+
+            <div class="mini-stat depense">
+                <small>💸 Dépenses</small>
+                <strong>{{ total_depenses }} FCFA</strong>
+            </div>
+
+            <div class="mini-stat mobile">
+                <small>📱 Mobile Money</small>
+                <strong>{{ mobile_money|default:0 }} FCFA</strong>
+            </div>
+
+            <div class="mini-stat espece">
+                <small>💵 Espèces</small>
+                <strong>{{ especes|default:0 }} FCFA</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="journal-layout">
+
+        <!-- ================= LEFT ================= -->
+        <div class="left-side">
+
+            <!-- ================= ACTIVITÉ ================= -->
+            <div class="card-pro">
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-3">
+                                <div class="label">Client</div>
+                                <input type="text"
+                                       name="client"
+                                       class="form-control"
+                                       placeholder="Nom client">
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="label">Service</div>
+                                <select name="service" class="form-select" required>
+
+                                    <option value="impression">🖨 Impression</option>
+                                    <option value="photocopie_bn">📄 Photocopie Blanc/Noir</option>
+                                    <option value="photocopie_couleur">🎨 Photocopie Couleur</option>
+                                    <option value="inscription">📝 Inscription</option>
+                                    <option value="traitement_texte">⌨️ Traitement de texte</option>
+                                    <option value="creation_cv">📋 Création de CV</option>
+                                    <option value="lettre_motivation">✉️ Lettre de motivation</option>
+                                    <option value="convocation">📑 Convocation</option>
+                                    <option value="paiement">💳 Paiement</option>
+                                    <option value="confection_document">📁 Confection document</option>
+                                    <option value="modification_document">🖊 Modification</option>
+                                    <option value="photo_minute">📸 Photo minute</option>
+                                    <option value="envoi_document">📤 Envoi document</option>
+                                    <option value="carte_pvc">🪪 Carte PVC</option>
+                                    <option value="carnet">📘 Carnet</option>
+                                    <option value="autre">🔧 Autre</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">PU</div>
+                                <input type="number"
+                                       name="prix_unitaire"
+                                       class="form-control"
+                                       placeholder="0">
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">Qté</div>
+                                <input type="number"
+                                       name="quantite"
+                                       class="form-control"
+                                       value="1">
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="label">Total</div>
+                                <input type="number"
+                                       name="montant_total"
+                                       class="form-control"
+                                       placeholder="0">
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-4"
+                                name="action"
+                                value="add_activity">
+                            ➕ Ajouter activité
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+            
+            <!-- ================= TABLE ================= -->
+            <div class="card-pro">
+                <div class="table-scroll ">
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th>Heure</th>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for a in activites %}
+
+                            <tr>
+                                <td>{{ a.heure }}</td>
+                                <td><strong>{{ a.client }}</strong></td>
+                                <td>{{ a.service }}</td>
+                                <td><strong>{{ a.montant }} FCFA</strong></td>
+                                <td>
+                                    <a href="{% url 'supprimer_activite' a.id %}"
+                                       class="btn btn-danger btn-sm">
+                                        🗑
+                                    </a>
+                                </td>
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="5"
+                                    class="text-center text-muted py-4">
+                                    Aucune activité enregistrée
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+            <!-- ================= DEPENSE ================= -->
+            <div class="card-pro">
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-8">
+                                <input type="number"
+                                       name="depense_jour"
+                                       class="form-control"
+                                       placeholder="💸 Ajouter une dépense">
+                            </div>
+
+                            <div class="col-md-4">
+                                <button class="btn btn-danger w-100"
+                                        name="action"
+                                        value="save_depense">
+                                    Enregistrer
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- ================= PAIEMENTS ================= -->
+            <div class="card-pro">
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">
+                        💳 Répartition des encaissements
+                    </h5>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <div class="label">📱 Mobile Money</div>
+                                <input type="number"
+                                       name="mobile_money"
+                                       class="form-control"
+                                       value="{{ mobile_money|default:0 }}">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="label">💵 Espèces</div>
+                                <input type="number"
+                                       name="especes"
+                                       class="form-control"
+                                       value="{{ especes|default:0 }}">
+                            </div>
+
+                            <div class="col-md-12">
+                                <button class="btn btn-primary w-100"
+                                        name="action"
+                                        value="save_paiement">
+                                    💾 Enregistrer les paiements
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            
+
+        </div>
+
+        <!-- ================= RIGHT ================= -->
+        <div class="right-side">
+
+            <div class="calendar-card">
+
+                <div class="calendar-header">
+                    📅 {{ mois_nom }} {{ annee }}
+                </div>
+
+                <div class="calendar-grid">
+
+                    <div class="day-name">Lun</div>
+                    <div class="day-name">Mar</div>
+                    <div class="day-name">Mer</div>
+                    <div class="day-name">Jeu</div>
+                    <div class="day-name">Ven</div>
+                    <div class="day-name">Sam</div>
+                    <div class="day-name">Dim</div>
+
+                    {% for _ in empty_start %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
+
+                    {% for day in calendrier %}
+
+                        <div class="calendar-day calendar-click
+                            {% if day.is_today %}today{% endif %}
+                            {% if day.is_selected %}selected{% endif %}"
+                            data-date="{{ day.date|date:'Y-m-d' }}">
+
+                            <div class="day-number">
+                                {{ day.numero }}
+                            </div>
+
+                            <div class="day-total">
+                                {{ day.total }} FCFA
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                    {% for _ in empty_end %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-overlay" id="dayModal" onclick="overlayClose(event)">
+
+    <div class="modal-card" role="dialog" aria-modal="true">
+
+        <div class="modal-top">
+
+            <h3 id="modalTitle">
+                📅 Détails du jour
+            </h3>
+
+            <button
+                class="modal-close"
+                onclick="closeModal()"
+                aria-label="Fermer le modal">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="modalBody">
+            <!-- contenu dynamique -->
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="{% static 'js/journal.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dgf-services</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'gestion/css/base.css' %}">
+</head>
+<body>
+
+{% with request.resolver_match.url_name as url_name %}
+
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+
+    <div class="container-fluid">
+
+        <!-- LOGO -->
+        <a class="navbar-brand {% if url_name == 'journal' %}active{% endif %}"
+           href="{% url 'journal' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Logo">
+            Dgf-services
+        </a>
+
+        <!-- TOGGLER -->
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- MENU -->
+        <div class="collapse navbar-collapse" id="menu">
+
+            <ul class="navbar-nav ms-auto align-items-center">
+
+                <li class="nav-item">
+                    <a class="nav-link {% if url_name == 'journal' %}active{% endif %}"
+                       href="{% url 'journal' %}">
+                        <i class="bi bi-journal-text"></i> Journal
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if url_name == 'mise_a_jour_registre' %}active{% endif %}"
+                       href="{% url 'mise_a_jour_registre' %}">
+                        <i class="bi bi-arrow-clockwise"></i> Mise à jour
+                    </a>
+                </li>
+
+                
+
+                <li class="nav-item">
+                    <a class="nav-link {% if url_name == 'historique' %}active{% endif %}"
+                       href="{% url 'historique' %}">
+                        <i class="bi bi-calendar-event"></i> Historique
+                    </a>
+                </li>
+                
+                {% if is_admin %}
+
+                <li class="nav-item">
+                    <a class="nav-link {% if url_name == 'statistiques' %}active{% endif %}"
+                       href="{% url 'statistiques' %}">
+                        <i class="bi bi-search"></i> Statistiques
+                    </a>
+                </li>
+
+                
+
+                <li class="nav-item">
+                    <a class="nav-link {% if url_name == 'admin_users' %}active{% endif %}"
+                    href="{% url 'admin_users' %}">
+                    
+                        <i class="bi bi-shield-lock-fill"></i> Admin
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- USER -->
+                {% if user.is_authenticated %}
+                <li class="nav-item user-box">
+
+                    <span class="username">
+                        <i class="bi bi-person-circle"></i>
+                        {{ user.username }}
+                    </span>
+
+                    <a class="logout-btn" href="{% url 'logout' %}">
+                        Déconnexion
+                    </a>
+
+                </li>
+                {% endif %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+{% endwith %}
+
+<!-- CONTENT -->
+<div class="container-fluid mt-4 px-4">
+
+    <div class="main-container">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

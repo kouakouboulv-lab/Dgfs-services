@@ -1,0 +1,187 @@
+
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(15,23,42,.6);
+    backdrop-filter: blur(6px);
+
+    z-index: 9999;
+}
+
+.modal-overlay.show{
+    display: flex !important;
+}
+/* HEADER MODAL */
+.modal-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+/* BOUTON FERMER */
+.modal-close{
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#ef4444;
+    color:white;
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+.modal-close:hover{
+    transform:rotate(90deg) scale(1.1);
+    background:#dc2626;
+}
+
+/* KPI */
+.day-kpis{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.day-kpi{
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+    transition:.25s;
+}
+
+.day-kpi:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 25px rgba(37,99,235,.15);
+}
+
+.day-kpi small{
+    display:block;
+    color:#64748b;
+    margin-bottom:8px;
+}
+
+.day-kpi strong{
+    font-size:18px;
+}
+
+/* LISTE ACTIVITÉS */
+.activities-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.modal-item{
+    background:#f8fafc;
+    border-radius:18px;
+    padding:18px;
+
+    border:1px solid transparent;
+    transition:.25s;
+}
+
+.modal-item:hover{
+    transform:translateX(5px);
+    border-color:#dbeafe;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+
+.modal-item-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.modal-client{
+    font-weight:700;
+}
+
+.modal-total{
+    color:#16a34a;
+    font-weight:800;
+}
+
+.modal-service{
+    margin-top:8px;
+    color:#64748b;
+}
+
+/* SCROLLBAR */
+.modal-card::-webkit-scrollbar{
+    width:8px;
+}
+
+.modal-card::-webkit-scrollbar-track{
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+.modal-card::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:10px;
+}
+
+.modal-card::-webkit-scrollbar-thumb:hover{
+    background:#94a3b8;
+}
+
+.modal-card,
+.modal-box{
+    width: 850px;
+    max-width: 95%;
+
+    background: white;
+    border-radius: 20px;
+
+    padding: 20px;
+
+    box-shadow: 0 20px 50px rgba(0,0,0,.2);
+
+    animation: modalIn .25s ease;
+
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* animation */
+@keyframes modalIn{
+    from{
+        opacity: 0;
+        transform: translateY(20px) scale(.97);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .day-kpis{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+.modal {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    margin: 0;
+}

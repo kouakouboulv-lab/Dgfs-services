@@ -1,7 +1,7 @@
 from django.urls import path
 from django.shortcuts import redirect
 from . import views
-
+from django.contrib.auth import views as auth_views
 
 # ================= HOME =================
 def home(request):
@@ -28,6 +28,8 @@ urlpatterns = [
         name="mise_a_jour_registre"
     ),
 
+    path("api/mise-a-jour-stats/", views.api_mise_a_jour_stats, name="api_stats"),
+
     # HISTORIQUE
     path("historique/", views.historique, name="historique"),
 
@@ -38,6 +40,7 @@ urlpatterns = [
 
     path("statistiques/", views.statistiques, name="statistiques"),
     
+    path("set-journal-date/", views.set_journal_date, name="set_journal_date"),
     # SUPPRESSION
     path(
         "supprimer/<int:id>/",
@@ -45,12 +48,25 @@ urlpatterns = [
         name="supprimer_activite"
     ),
 
+    path("password-reset/", auth_views.PasswordResetView.as_view(), name="password_reset"),
+    path("password-reset/done/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path("reset/done/", auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+
+    path("dashboard/users/", views.admin_users, name="admin_users"),
+    path("dashboard/users/delete/<int:user_id>/", views.delete_user, name="delete_user"),
+    
+    
+    path("journal-stats/", views.journal_stats, name="journal_stats"),
+
     # DETAILS JOURNAL
     path(
         "journal-details/",
         views.journal_details,
         name="journal_details"
     ),
+    
+    
 
     # LOGIN / LOGOUT
     path("login/", views.login_user, name="login"),

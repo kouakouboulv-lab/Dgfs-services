@@ -1,0 +1,421 @@
+{% extends "gestion/html/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'gestion/css/statistiques.css' %}">
+
+<div class="dashboard">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <div class="page-title">
+                Dashboard Statistiques
+            </div>
+            
+            <div class="page-subtitle">
+                Analyse complète des revenus, dépenses et performances
+            </div>
+        </div>
+
+    </div>
+
+    <!-- KPI -->
+
+    <div class="stats-grid">
+
+        <!-- Revenus -->
+        <div class="stat-card revenue">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Revenus</div>
+                    <div class="stat-value">
+                        {{ total_revenus }} FCFA
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-success">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Performance positive
+            </div>
+
+        </div>
+
+        <!-- Dépenses -->
+        <div class="stat-card depense">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Dépenses</div>
+                    <div class="stat-value">
+                        {{ total_depenses }} FCFA
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-danger">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Charges globales
+            </div>
+
+        </div>
+
+        <!-- Bénéfice -->
+        <div class="stat-card benefice">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Bénéfice Net</div>
+                    <div class="stat-value">
+                        {{ benefice }} FCFA
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Résultat du mois
+            </div>
+
+        </div>
+
+        <!-- Activités -->
+        <div class="stat-card activite">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Activités</div>
+                    <div class="stat-value">
+                        {{ nombre_activites }}
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-warning">
+                    <i class="bi bi-collection"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Total opérations
+            </div>
+
+        </div>
+
+        <!-- Trésorerie -->
+        <div class="stat-card cash">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Trésorerie</div>
+                    <div class="stat-value">
+                        {{ benefice }} FCFA
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-bank"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Solde disponible
+            </div>
+
+        </div>
+
+        <!-- Service vedette -->
+        <div class="stat-card service">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Service Vedette</div>
+                    <div class="stat-value" style="font-size:18px">
+                        {{ service_vedette }}
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-warning">
+                    <i class="bi bi-trophy"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Plus rentable
+            </div>
+
+        </div>
+
+        <!-- Meilleur jour -->
+        <div class="stat-card best-day">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Meilleur Jour</div>
+                    <div class="stat-value" style="font-size:20px">
+                        {{ meilleur_jour }}
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-success">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Plus forte recette
+            </div>
+
+        </div>
+
+        <!-- Moyenne -->
+        <div class="stat-card average">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">Moyenne/Jour</div>
+                    <div class="stat-value">
+                        {{ moyenne_jour }} FCFA
+                    </div>
+                </div>
+
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+
+            </div>
+
+            <div class="stat-bottom">
+                Revenus quotidiens
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRAPHIQUE + TOP SERVICES -->
+
+    <div class="layout">
+
+        <div class="card-pro">
+
+            <div class="card-header">
+                <div class="card-title">
+                    📈 Évolution de l'entreprise
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="chart-box">
+                    <canvas id="revenusChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-pro">
+
+            <div class="card-header">
+                <div class="card-title">
+                    🕒 Activités récentes
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="activity-list">
+
+                    {% for a in activites_recentes|slice:":4" %}
+
+                    <div class="activity-item">
+
+                        <div>
+
+                            <strong>
+                                {{ a.service }}
+                            </strong>
+
+                            <br>
+
+                            <small>
+                                {{ a.client }}
+                            </small>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ a.montant }} FCFA
+                            </strong>
+
+                            <br>
+
+                            <small>
+                                {{ a.date }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="activity-item">
+                        Aucune activité enregistrée
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+    <!-- HEATMAP + IA -->
+
+    <div class="layout">
+
+        <div class="card-pro">
+
+            <div class="card-header">
+                <div class="card-title">
+                    🔥 Jours rentables
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="heatmap">
+
+                    {% for h in heatmap %}
+
+                    <div class="heat-box level-{{ h.level }}"
+                         title="Jour {{ h.jour }}">
+                        {{ h.jour }}
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-pro prediction-card">
+
+            <div class="card-body text-center">
+
+                <div class="prediction-icon">
+                    🤖
+                </div>
+
+                <h2>
+                    Prévision IA
+                </h2>
+
+                <h1 class="prediction-value">
+                    {{ prediction }} FCFA
+                </h1>
+
+                <p>
+                    Estimation du bénéfice du mois prochain
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+
+    <div class="card-pro">
+
+        <div class="card-header">
+            <div class="card-title">
+                ⚡ Actions rapides
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="action-grid">
+
+                <a href="{% url 'export_pdf' %}"
+                   class="action-btn btn-red">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Export PDF
+                </a>
+
+                <a href="#"
+                   class="action-btn btn-green">
+                    <i class="bi bi-printer"></i>
+                    Imprimer
+                </a>
+
+                <a href="#"
+                   class="action-btn btn-blue">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    Sauvegarde
+                </a>
+
+                <a href="#"
+                   class="action-btn btn-orange"
+                   id="darkModeBtn">
+                    <i class="bi bi-moon-stars"></i>
+                    Mode sombre
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    window.chartLabels = JSON.parse('{{ labels|escapejs }}');
+    window.chartData = JSON.parse('{{ data|escapejs }}');
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/statistiques.js' %}"></script>
+
+{% endblock %}

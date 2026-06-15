@@ -1,0 +1,120 @@
+/* ================= GLOBAL ================= */
+body {
+    background: #f5f7fb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* ================= TITLE ================= */
+h2 {
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* ================= BUTTON ================= */
+.btn-primary {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.25);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(78, 115, 223, 0.35);
+}
+
+/* ================= TABLE ================= */
+table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+table th {
+    background: #4e73df;
+    color: white;
+    text-align: center;
+    padding: 12px;
+}
+
+table td {
+    text-align: center;
+    padding: 12px;
+    vertical-align: middle;
+}
+
+table tr:hover {
+    background: #f0f4ff;
+}
+
+/* ================= DELETE BUTTON ================= */
+.btn-danger {
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-danger:hover {
+    transform: scale(1.05);
+}
+
+/* ================= MODAL ================= */
+.modal-content {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+    background: #4e73df;
+    color: white;
+    border-radius: 14px 14px 0 0;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+/* ================= INPUTS ================= */
+.form-control {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 8px rgba(78, 115, 223, 0.3);
+}
+
+/* ================= SUCCESS BUTTON ================= */
+.btn-success {
+    background: linear-gradient(135deg, #1cc88a, #17a673);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(28, 200, 138, 0.3);
+}
+
+table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+h4 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
