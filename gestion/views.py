@@ -40,16 +40,17 @@ def login_user(request):
         if user is not None:
             login(request, user)
 
-            # 🔥 CHECK ROLE
+            # Session expire après 1 heure
+            request.session.set_expiry(3600)
+
             if user.groups.filter(name="admin").exists():
                 return redirect("admin_dashboard")
 
             return redirect("journal")
 
-        else:
-            return render(request, "registration/login.html", {
-                "error": "Identifiants incorrects"
-            })
+        return render(request, "registration/login.html", {
+            "error": "Identifiants incorrects"
+        })
 
     return render(request, "registration/login.html")
 

@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ================= SECURITY =================
 SECRET_KEY = 'django-insecure-8!12c)pcag-$=gj@_2$$dljw%lci=@6fmjg3u=phbx=@402i-6'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -128,8 +128,11 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 
 # ⚠️ IMPORTANT (sinon tu perds login en fermant navigateur)
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 jours
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600 # 1 heures
+
+# Remet le compteur à 1h à chaque action de l'utilisateur
+SESSION_SAVE_EVERY_REQUEST = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
