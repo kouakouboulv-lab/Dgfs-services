@@ -604,7 +604,11 @@ def mise_a_jour_registre(request):
             }
         )
 
-        request.session.flush()
+        request.session["temp_date"] = ""
+        request.session["temp_activites"] = []
+        request.session["temp_depenses"] = []
+        request.session["temp_mobile_money"] = 0
+        request.session["temp_especes"] = 0
 
         return JsonResponse({
             "success": True,
@@ -901,7 +905,7 @@ def supprimer_activite(request, id):
 
 
 # ================= HISTORIQUE =================
-
+@login_required
 def historique(request):
 
     today = timezone.now().date()
