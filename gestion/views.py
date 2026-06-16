@@ -377,7 +377,7 @@ def set_journal_date(request):
 def is_ajax(request):
     return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-@login_required
+
 def mise_a_jour_registre(request):
 
     # ================= INIT SESSION =================
@@ -903,7 +903,7 @@ def supprimer_activite(request, id):
 
 
 # ================= HISTORIQUE =================
-@login_required
+
 def historique(request):
 
     today = timezone.now().date()
