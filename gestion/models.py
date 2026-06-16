@@ -112,6 +112,8 @@ class Activite(models.Model):
         default=timezone.now
     )
 
+    motif = models.CharField(max_length=255, blank=True)
+
     # ================= SAVE =================
 
     def save(self, *args, **kwargs):
