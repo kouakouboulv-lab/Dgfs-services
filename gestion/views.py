@@ -363,12 +363,10 @@ def set_journal_date(request):
 
     if request.method == "POST":
 
-        request.session.flush()
+        request.session.pop("temp_activites", None)
+        request.session.pop("temp_depenses", None)
 
         request.session["temp_date"] = request.POST.get("date")
-
-        request.session["temp_activites"] = []
-        request.session["temp_depenses"] = []
 
     return redirect("mise_a_jour_registre")
 
