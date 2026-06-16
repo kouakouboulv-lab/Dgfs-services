@@ -28,6 +28,19 @@ from django.contrib.auth.models import Group
 
 # ================= LOGIN =================
 
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def clear_data(request):
+
+    Depense.objects.all().delete()
+    PaiementJour.objects.all().delete()
+    Activite.objects.all().delete()
+
+    return HttpResponse("Données supprimées")
+
+
 def login_user(request):
 
     if request.method == "POST":
