@@ -89,6 +89,7 @@ function sendForm(formId){
                     this.reset();
 
                     refreshTable();
+                    refreshCalendar();
 
                     refreshData();
 
@@ -485,6 +486,7 @@ document.addEventListener(
 
                     refreshTable();
 
+                    refreshCalendar();
 
                     refreshData();
 
@@ -513,6 +515,69 @@ document.addEventListener(
     }
 
 );
+
+// ==========================
+// RAFRAICHIR CALENDRIER
+// ==========================
+
+async function refreshCalendar(){
+
+    try{
+
+        const response = await fetch(
+            window.location.href,
+            {
+                headers:{
+                    "X-Requested-With":"XMLHttpRequest"
+                }
+            }
+        );
+
+
+        const html = await response.text();
+
+
+        const parser = new DOMParser();
+
+
+        const doc = parser.parseFromString(
+            html,
+            "text/html"
+        );
+
+
+        const nouveauCalendrier =
+        doc.querySelector("#calendar-container");
+
+
+        const ancienCalendrier =
+        document.querySelector("#calendar-container");
+
+
+
+        if(nouveauCalendrier && ancienCalendrier){
+
+            ancienCalendrier.innerHTML =
+            nouveauCalendrier.innerHTML;
+
+
+            reloadCalendarClick();
+
+        }
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Erreur actualisation calendrier :",
+            error
+        );
+
+    }
+
+}
 
 
 

@@ -5,6 +5,7 @@ async function goToDate() {
     const month = document.getElementById("monthSelect").value;
     const year = document.getElementById("yearSelect").value;
 
+
     const response = await fetch(
         `?mois=${month}&annee=${year}`,
         {
@@ -14,17 +15,33 @@ async function goToDate() {
         }
     );
 
+
     const html = await response.text();
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
 
-    document.getElementById("dashboard-content").innerHTML =
-        doc.getElementById("dashboard-content").innerHTML;
+    const parser = new DOMParser();
+
+    const doc = parser.parseFromString(
+        html,
+        "text/html"
+    );
+
+
+    // Remplace seulement le calendrier
+    const newCalendar = doc.querySelector(".calendar-grid");
+
+
+    document.querySelector(".calendar-grid").innerHTML =
+        newCalendar.innerHTML;
+
+
 
     initCalendar();
+
     initChart();
+
     animateKPI();
+
 }
 
 
@@ -32,26 +49,32 @@ async function goToDate() {
 
 function initCalendar() {
 
-    const days = document.querySelectorAll(".calendar-click");
+    document.removeEventListener("click", calendarHandler);
 
-    if (!days.length) return;
+    document.addEventListener("click", calendarHandler);
 
-    days.forEach(day => {
+}
 
-        day.addEventListener("click", () => {
 
-            const date = day.dataset.date;
+function calendarHandler(e){
 
-            if (!date) return;
+    const day = e.target.closest(".calendar-click");
 
-            // ⚠️ vient de ton autre JS (modal.js)
-            if (typeof openModal === "function") {
-                openModal(date);
-            }
+    if(!day) return;
 
-        });
 
-    });
+    const date = day.dataset.date;
+
+
+    if(!date) return;
+
+
+    if(typeof openModal === "function"){
+
+        openModal(date);
+
+    }
+
 }
 
 

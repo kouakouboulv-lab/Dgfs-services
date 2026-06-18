@@ -278,51 +278,54 @@
         <!-- ================= RIGHT ================= -->
         <div class="right-side">
 
-            <div class="calendar-card">
+            <div id="calendar-container">
 
-                <div class="calendar-header">
-                    📅 {{ mois_nom }} {{ annee }}
-                </div>
+                <div class="calendar-card">
 
-                <div class="calendar-grid">
+                    <div class="calendar-header">
+                        📅 {{ mois_nom }} {{ annee }}
+                    </div>
 
-                    <div class="day-name">Lun</div>
-                    <div class="day-name">Mar</div>
-                    <div class="day-name">Mer</div>
-                    <div class="day-name">Jeu</div>
-                    <div class="day-name">Ven</div>
-                    <div class="day-name">Sam</div>
-                    <div class="day-name">Dim</div>
+                    <div class="calendar-grid">
 
-                    {% for _ in empty_start %}
-                        <div class="calendar-empty"></div>
-                    {% endfor %}
+                        <div class="day-name">Lun</div>
+                        <div class="day-name">Mar</div>
+                        <div class="day-name">Mer</div>
+                        <div class="day-name">Jeu</div>
+                        <div class="day-name">Ven</div>
+                        <div class="day-name">Sam</div>
+                        <div class="day-name">Dim</div>
 
-                    {% for day in calendrier %}
+                        {% for _ in empty_start %}
+                            <div class="calendar-empty"></div>
+                        {% endfor %}
 
-                        <div class="calendar-day calendar-click
-                            {% if day.is_today %}today{% endif %}
-                            {% if day.is_selected %}selected{% endif %}"
-                            data-date="{{ day.date|date:'Y-m-d' }}">
+                        {% for day in calendrier %}
 
-                            <div class="day-number">
-                                {{ day.numero }}
+                            <div class="calendar-day calendar-click
+                                {% if day.is_today %}today{% endif %}
+                                {% if day.is_selected %}selected{% endif %}"
+                                data-date="{{ day.date|date:'Y-m-d' }}">
+
+                                <div class="day-number">
+                                    {{ day.numero }}
+                                </div>
+
+                                <div class="day-total">
+                                    {{ day.total }} FCFA
+                                </div>
+
                             </div>
 
-                            <div class="day-total">
-                                {{ day.total }} FCFA
-                            </div>
+                        {% endfor %}
 
-                        </div>
+                        {% for _ in empty_end %}
+                            <div class="calendar-empty"></div>
+                        {% endfor %}
 
-                    {% endfor %}
-
-                    {% for _ in empty_end %}
-                        <div class="calendar-empty"></div>
-                    {% endfor %}
+                    </div>
 
                 </div>
-
             </div>
 
         </div>

@@ -201,46 +201,47 @@
             </div>
 
             <!-- GRID -->
+            <div id="calendar-container">
+                <div class="calendar-grid">
 
-            <div class="calendar-grid">
+                    <div class="day-name">Lun</div>
+                    <div class="day-name">Mar</div>
+                    <div class="day-name">Mer</div>
+                    <div class="day-name">Jeu</div>
+                    <div class="day-name">Ven</div>
+                    <div class="day-name">Sam</div>
+                    <div class="day-name">Dim</div>
 
-                <div class="day-name">Lun</div>
-                <div class="day-name">Mar</div>
-                <div class="day-name">Mer</div>
-                <div class="day-name">Jeu</div>
-                <div class="day-name">Ven</div>
-                <div class="day-name">Sam</div>
-                <div class="day-name">Dim</div>
+                    {% for _ in empty_start %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
 
-                {% for _ in empty_start %}
-                    <div class="calendar-empty"></div>
-                {% endfor %}
+                    {% for d in calendrier %}
 
-                {% for d in calendrier %}
+                        <div class="calendar-day calendar-click
+                            {% if d.is_today %}today{% endif %}
+                            {% if d.is_selected %}selected{% endif %}"
 
-                    <div class="calendar-day calendar-click
-                        {% if d.is_today %}today{% endif %}
-                        {% if d.is_selected %}selected{% endif %}"
+                            data-date="{{ d.date|date:'Y-m-d' }}">
 
-                        data-date="{{ d.date|date:'Y-m-d' }}">
+                            <div class="day-number">
+                                {{ d.numero }}
+                            </div>
 
-                        <div class="day-number">
-                            {{ d.numero }}
+                            <div class="day-total">
+                                {{ d.revenu }} FCFA
+                            </div>
+                            
+
                         </div>
 
-                        <div class="day-total">
-                            {{ d.revenu }} FCFA
-                        </div>
-                        
+                    {% endfor %}
 
-                    </div>
+                    {% for _ in empty_end %}
+                        <div class="calendar-empty"></div>
+                    {% endfor %}
 
-                {% endfor %}
-
-                {% for _ in empty_end %}
-                    <div class="calendar-empty"></div>
-                {% endfor %}
-
+                </div>
             </div>
 
         </div>
@@ -302,7 +303,7 @@
 {{ data_chart|json_script:"chart-data" }}
 
 <script src="{% static 'js/historique.js' %}"></script>
-<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/modal_histo.js' %}"></script>
 
 {% endblock %}
 

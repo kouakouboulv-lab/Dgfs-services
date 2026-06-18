@@ -5,6 +5,7 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 
 from datetime import date, datetime
 import calendar
@@ -1010,6 +1011,26 @@ def journal(request):
         especes = paiement.especes
 
     # ================= TEMPLATE =================
+    # ================= AJAX REFRESH =================
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+
+        html = render_to_string(
+            "gestion/html/journal.html",
+            {
+                "calendrier": calendrier,
+                "empty_start": empty_start,
+                "empty_end": empty_end,
+                "mois_nom": mois_nom,
+                "annee": annee,
+            },
+            request=request
+        )
+
+
+        return JsonResponse({
+            "calendar": html
+        })
 
     return render(
         request,
