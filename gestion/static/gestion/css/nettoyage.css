@@ -1,0 +1,183 @@
+/* =========================
+   PAGE NETTOYAGE
+========================= */
+
+.nettoyage-page {
+    padding: 20px;
+}
+
+
+/* TITRE */
+
+.nettoyage-page h2 {
+    font-weight: 700;
+    color: #343a40;
+}
+
+
+/* BOUTON RETOUR */
+
+.btn-retour {
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-retour:hover {
+    transform: translateX(-4px);
+}
+
+
+/* RECHERCHE DATE */
+
+#datePicker {
+
+    border-radius: 10px;
+    height: 42px;
+    width: 180px;
+
+}
+
+
+.btn-primary {
+
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+
+}
+
+
+/* CARTES */
+
+.card {
+
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+
+}
+
+
+.card-header {
+
+    font-weight: 700;
+    font-size: 17px;
+
+}
+
+
+/* LISTE ACTIVITES */
+
+#listeActivites {
+
+    background: #ffffff;
+
+}
+
+
+.activite-item {
+
+    transition: 0.25s;
+    background: white;
+
+}
+
+
+.activite-item:hover {
+
+    background: #f1f5ff;
+    transform: translateX(5px);
+
+}
+
+
+.activite-item strong {
+
+    color: #212529;
+    font-size: 16px;
+
+}
+
+
+/* DETAILS */
+
+#detailsActivite {
+
+    background: #fafafa;
+    border-radius: 0 0 15px 15px;
+
+}
+
+
+#detailsActivite h3 {
+
+    font-weight: 700;
+    color: #198754;
+
+}
+
+
+/* PETITES CARTES DETAILS */
+
+#detailsActivite .card {
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+}
+
+
+#detailsActivite h6 {
+
+    color: #6c757d;
+    font-weight: 700;
+
+}
+
+
+/* BOUTON SUPPRESSION */
+
+.btn-danger {
+
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-weight: 600;
+
+}
+
+
+.btn-danger:hover {
+
+    transform: scale(1.03);
+
+}
+
+
+/* RESPONSIVE MOBILE */
+
+@media(max-width:768px){
+
+    .d-flex.justify-content-between {
+
+        flex-direction: column;
+        gap:15px;
+
+    }
+
+
+    #datePicker {
+
+        width:100%;
+
+    }
+
+
+    .btn-primary {
+
+        width:100%;
+
+    }
+
+
+}

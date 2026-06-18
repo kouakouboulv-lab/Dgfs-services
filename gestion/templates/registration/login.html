@@ -1,120 +1,506 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
 
-    <style>
+<meta charset="UTF-8">
+<meta name="viewport" name="autocomplete" content="off" content="width=device-width, initial-scale=1.0">
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
+<title>DGF Services - Connexion</title>
 
-        body{
-            font-family:Arial, sans-serif;
-            background:#f5f7fb;
 
-            display:flex;
-            justify-content:center;
-            align-items:center;
+<style>
 
-            height:100vh;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        .login-box{
-            background:white;
-            padding:40px;
-            border-radius:15px;
-            width:350px;
 
-            box-shadow:0 5px 20px rgba(0,0,0,0.1);
-        }
+body{
 
-        h2{
-            text-align:center;
-            margin-bottom:25px;
-            color:#0d6efd;
-        }
+    height:100vh;
 
-        form p{
-            margin-bottom:15px;
-        }
+    display:flex;
 
-        label{
-            display:block;
-            margin-bottom:6px;
-            font-weight:600;
-            color:#333;
-        }
+    justify-content:center;
 
-        input{
-            width:100%;
-            padding:12px;
+    align-items:center;
 
-            border:1px solid #ccc;
-            border-radius:10px;
 
-            outline:none;
-            font-size:15px;
-        }
+    font-family:'Segoe UI', Arial, sans-serif;
 
-        input:focus{
-            border-color:#0d6efd;
-        }
 
-        button{
-            width:100%;
-            padding:12px;
+    background-image:
 
-            border:none;
-            border-radius:10px;
+    linear-gradient(
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.45)
+    ),
 
-            background:#0d6efd;
-            color:white;
+    url("{% static 'img/background.jpg' %}");
 
-            cursor:pointer;
-            font-size:16px;
-            font-weight:600;
 
-            transition:0.2s;
-        }
+    background-size:cover;
 
-        button:hover{
-            background:#0b5ed7;
-        }
+    background-position:center;
 
-        .errorlist{
-            list-style:none;
-            color:#dc3545;
-            margin-bottom:10px;
-            font-size:14px;
-        }
 
-    </style>
+    background-repeat:no-repeat;
+
+
+    overflow:hidden;
+
+}
+
+
+
+/* cercles décoratifs */
+
+body::before,
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(2px);
+
+}
+
+
+body::before{
+
+    width:350px;
+    height:350px;
+
+    background:rgba(255,255,255,.15);
+
+    top:-100px;
+
+    left:-100px;
+
+}
+
+
+body::after{
+
+    width:300px;
+    height:300px;
+
+    background:rgba(255,255,255,.12);
+
+    bottom:-80px;
+
+    right:-80px;
+
+}
+
+
+
+/* CARTE */
+
+
+.login-box{
+
+
+    width:380px;
+
+
+    padding:40px;
+
+
+    background:rgba(255, 255, 255, 0.95);
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    0 20px 50px rgba(0,0,0,.25);
+
+
+    text-align:center;
+
+
+    position:relative;
+
+    z-index:2;
+
+
+    animation:show .8s ease;
+
+
+}
+
+
+
+@keyframes show{
+
+
+from{
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+
+}
+
+
+
+/* LOGO */
+
+
+.company-logo{
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.company-logo img{
+
+
+    width:120px;
+
+    height:120px;
+
+
+    object-fit:contain;
+
+
+    border-radius:20%;
+
+
+    padding:1px;
+
+
+    background:white;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.18);
+
+
+    border:5px solid #0d6efd;
+
+
+}
+
+
+
+
+
+.company-logo h1{
+
+
+    margin-top:18px;
+
+
+    font-size:28px;
+
+
+    color:#0d6efd;
+
+
+    font-weight:800;
+
+
+    letter-spacing:1px;
+
+
+}
+
+
+
+
+h2{
+
+
+    color:#333;
+
+
+    margin-bottom:25px;
+
+
+    font-size:24px;
+
+
+}
+
+
+
+
+
+/* FORMULAIRE */
+
+
+form p{
+
+
+    margin-bottom:18px;
+
+}
+
+
+
+label{
+
+
+    display:block;
+
+    text-align:left;
+
+
+    margin-bottom:7px;
+
+
+    font-weight:600;
+
+
+    color:#444;
+
+}
+
+
+
+
+input{
+
+
+    width:100%;
+
+
+    padding:14px;
+
+
+    border-radius:12px;
+
+
+    border:1px solid #ddd;
+
+
+    font-size:15px;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+input:focus{
+
+
+    outline:none;
+
+
+    border-color:#0d6efd;
+
+
+    box-shadow:
+
+    0 0 10px rgba(13,110,253,.25);
+
+
+}
+
+
+
+
+
+button{
+
+
+    margin-top:10px;
+
+
+    width:100%;
+
+
+    padding:14px;
+
+
+    border:none;
+
+
+    border-radius:12px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0d6efd,
+        #6610f2
+    );
+
+
+    color:white;
+
+
+    font-size:17px;
+
+
+    font-weight:bold;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+button:hover{
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+    0 10px 20px rgba(13,110,253,.35);
+
+
+}
+
+
+
+
+.errorlist{
+
+
+    list-style:none;
+
+
+    color:#dc3545;
+
+
+    margin-bottom:10px;
+
+
+}
+
+
+
+
+/* texte bas */
+
+
+.footer{
+
+
+    margin-top:20px;
+
+
+    font-size:13px;
+
+
+    color:#777;
+
+
+}
+
+
+
+</style>
+
 
 </head>
+
+
+
 <body>
 
-    <div class="login-box">
 
-        <h2>Connexion</h2>
 
-        <form method="POST">
+<div class="login-box">
 
-            {% csrf_token %}
 
-            {{ form.as_p }}
 
-            <button type="submit">
-                Se connecter
-            </button>
+    <div class="company-logo">
 
-        </form>
+
+        <img src="{% static 'img/logo.png' %}" alt="Logo DGF Services">
+
+
+        <h1>DGF Services</h1>
+
 
     </div>
+
+
+
+    <h2>Connexion</h2>
+
+
+
+
+    <form method="POST" autocomplete="off">
+
+
+        {% csrf_token %}
+
+
+        {{ form.as_p }}
+
+
+
+        <button type="submit">
+
+            🔐 Se connecter
+
+        </button>
+
+
+    </form>
+
+
+
+    <div class="footer">
+
+        © 2026 DGF Services by Smooth
+
+    </div>
+
+
+
+</div>
+
+
 
 </body>
 </html>

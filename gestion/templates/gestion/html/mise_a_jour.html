@@ -6,6 +6,9 @@
 <link rel="stylesheet"
     href="{% static 'gestion/css/mise_a_jour.css' %}">
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
 <div class="page-container">
     
     <div id="toast" class="toast"></div>
@@ -13,7 +16,7 @@
     <div class="top-bar">
 
         <div>
-            <div class="page-title">📊 Gestion des activités</div>
+            <div class="page-title">📊 Mise à jour des activités</div>
             <div class="page-subtitle">Tableau moderne pour enregistrer activités et dépenses.</div>
         </div>
 
@@ -86,36 +89,47 @@
 
                     <div class="form-group">
                         <label>Service</label>
-                        <select name="service" required>
+                        <select name="service" id="service" class="form-select" required>
 
-                            <option value="impression">🖨 Impression</option>
-                            <option value="photocopie_bn">📄 Photocopie Blanc/Noir</option>
-                            <option value="photocopie_couleur">🎨 Photocopie Couleur</option>
-                            <option value="inscription">📝 Inscription</option>
-                            <option value="traitement_texte">⌨️ Traitement de texte</option>
-                            <option value="creation_cv">📋 Création de CV</option>
-                            <option value="lettre_motivation">✉️ Lettre de motivation</option>
-                            <option value="convocation">📑 Convocation</option>
-                            <option value="paiement">💳 Paiement</option>
-                            <option value="confection_document">📁 Confection document</option>
-                            <option value="modification_document">🖊 Modification</option>
-                            <option value="photo_minute">📸 Photo minute</option>
-                            <option value="envoi_document">📤 Envoi document</option>
-                            <option value="carte_pvc">🪪 Carte PVC</option>
-                            <option value="carnet">📘 Carnet</option>
-                            <option value="autre">🔧 Autre</option>
+                            <option value="">Choisir un service</option>
+
+                            <option value="autre">Autre</option>
+                            <option value="carte_pvc"> Carte PVC</option>
+                            <option value="carnet">Carnet</option>
+                            <option value="carnet csu">Carnet CSU Goumere</option>
+                            <option value="carnet csr">Carnet CSR Korobo</option>
+                            <option value="carnet csr D">Carnet CSR Dadiasse</option>
+                            <option value="carnet hg">Carnet HG Tanda</option>
+                            <option value="confection_document">Confection document</option>
+                            <option value="convocation">Convocation</option>
+                            <option value="chemise">Chemise cartonée</option>
+                            <option value="rabbat">Chemise à rabbat</option>
+                            <option value="creation_cv">Création de CV</option>
+                            <option value="envoi_document">Envoi document</option>
+                            <option value="impression">Impression</option>
+                            <option value="inscription">Inscription</option>
+                            <option value="lettre_motivation">Lettre de motivation</option>
+                            <option value="modification_document">Modification</option>
+                            <option value="paiement">Paiement</option>
+                            <option value="photo_minute">Photo minute</option>
+                            <option value="photocopie_bn">Photocopie Blanc/Noir</option>
+                            <option value="photocopie_couleur">Photocopie Couleur</option>
+                            <option value="plastification">Plastification</option>
+                            <option value="quitance">Achat de timbre</option>
+                            <option value="reluire">Reluire</option>
+                            <option value="traitement_texte">Traitement de texte</option>
                         
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Prix unitaire</label>
-                        <input type="number" name="prix_unitaire" value="0" required>
+                        <label>Quantité</label>
+                        <input type="number" name="quantite" placeholder="1">
                     </div>
 
                     <div class="form-group">
-                        <label>Quantité</label>
-                        <input type="number" name="quantite" value="1">
+                        <label>Prix unitaire</label>
+                        <input type="number" name="prix_unitaire" placeholder="100" required>
                     </div>
 
                     <button type="submit" class="save-btn">
@@ -137,12 +151,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Montant</label>
-                            <input type="number" name="montant_depense" required>
+                            <input type="number" name="montant_depense" placeholder="Ex: 100" required>
                         </div>
 
                         <div class="form-group">
                             <label>Motif</label>
-                            <input type="text" name="motif">
+                            <input type="text" name="motif" placeholder="Ex: Internet">
                         </div>
                     
                         <button type="submit" class="save-btn depense-btn">
@@ -164,12 +178,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Mobile Money</label>
-                            <input type="number" name="mobile_money" value="{{ mobile_money }}">
+                            <input type="number" name="mobile_money"  value="{{ mobile_money }}">
                         </div>
 
                         <div class="form-group">
                             <label>Espèces</label>
-                            <input type="number" name="especes" value="{{ especes }}">
+                            <input type="number" name="especes"  value="{{ especes }}">
                         </div>
                     
                         <button type="submit" class="save-btn">
@@ -291,5 +305,10 @@
     </div>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+ 
 <script src="{% static 'js/mise_a_jour.js' %}"></script>
 {% endblock %}

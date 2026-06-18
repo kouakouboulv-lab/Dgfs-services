@@ -1,18 +1,30 @@
 /* ================= NAVIGATION ================= */
 
-function goToDate() {
+async function goToDate() {
 
-    const month = document.getElementById("monthSelect")?.value;
-    const year = document.getElementById("yearSelect")?.value;
+    const month = document.getElementById("monthSelect").value;
+    const year = document.getElementById("yearSelect").value;
 
-    if (!month || !year) return;
+    const response = await fetch(
+        `?mois=${month}&annee=${year}`,
+        {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        }
+    );
 
-    const params = new URLSearchParams(window.location.search);
+    const html = await response.text();
 
-    params.set("mois", month);
-    params.set("annee", year);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
 
-    window.location.search = params.toString();
+    document.getElementById("dashboard-content").innerHTML =
+        doc.getElementById("dashboard-content").innerHTML;
+
+    initCalendar();
+    initChart();
+    animateKPI();
 }
 
 

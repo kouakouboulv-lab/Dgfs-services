@@ -48,6 +48,8 @@ urlpatterns = [
         name="supprimer_activite"
     ),
 
+    path("nettoyage/", views.nettoyage, name="nettoyage"),
+
     path("password-reset/", auth_views.PasswordResetView.as_view(), name="password_reset"),
     path("password-reset/done/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
     path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
@@ -59,6 +61,17 @@ urlpatterns = [
     
     path("journal-stats/", views.journal_stats, name="journal_stats"),
 
+    path(
+        "ajax/activites/",
+        views.ajax_activites,
+        name="ajax_activites"
+    ),
+
+    path(
+        "ajax/delete-activite/<int:id>/",
+        views.ajax_delete_activite,
+        name="ajax_delete_activite"
+    ),
     # DETAILS JOURNAL
     path(
         "journal-details/",

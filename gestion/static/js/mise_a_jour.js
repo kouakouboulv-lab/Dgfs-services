@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!date) {
             showToast("❌ Veuillez sélectionner une date");
+            "error"
             return false;
         }
 
@@ -433,5 +434,21 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => console.error(err));
     }
+
+    
+    $(document).ready(function(){
+
+        $('#service').select2({
+
+            placeholder: "Rechercher un service",
+
+            allowClear: true,
+
+            width: '100%'
+
+        });
+
+    });
+
 
 });

@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="{% static 'gestion/css/journal.css' %}">
 <link rel="stylesheet" 
     href="{% static 'gestion/css/modal.css' %}">
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  
 <div class="container-fluid py-3">
 
     <!-- ================= HEADER ================= -->
@@ -18,23 +22,22 @@
 
             <div class="mini-stat revenue">
                 <small>💰 Revenus</small>
-                <strong>{{ total }} FCFA</strong>
+                <strong id="total-revenus">{{ total }}</strong>
             </div>
 
             <div class="mini-stat depense">
                 <small>💸 Dépenses</small>
-                <strong>{{ total_depenses }} FCFA</strong>
+                <strong id="total-depenses">{{ total_depenses }}</strong>
             </div>
 
             <div class="mini-stat mobile">
                 <small>📱 Mobile Money</small>
-                <strong>{{ mobile_money|default:0 }} FCFA</strong>
+                <strong id="total-mobile">{{ mobile_money }}</strong>
             </div>
 
             <div class="mini-stat espece">
                 <small>💵 Espèces</small>
-                <strong>{{ especes|default:0 }} FCFA</strong>
-            </div>
+                <strong id="total-especes">{{ especes }}</strong>
 
         </div>
 
@@ -49,8 +52,10 @@
             <div class="card-pro">
                 <div class="card-body">
 
-                    <form method="POST">
+                    <form id="form-activity" method="POST">
                         {% csrf_token %}
+
+                        <input type="hidden" name="action" value="add_activity">
 
                         <div class="row g-3">
 
@@ -63,35 +68,48 @@
                             </div>
 
                             <div class="col-md-3">
-                                <div class="label">Service</div>
-                                <select name="service" class="form-select" required>
 
-                                    <option value="impression">🖨 Impression</option>
-                                    <option value="photocopie_bn">📄 Photocopie Blanc/Noir</option>
-                                    <option value="photocopie_couleur">🎨 Photocopie Couleur</option>
-                                    <option value="inscription">📝 Inscription</option>
-                                    <option value="traitement_texte">⌨️ Traitement de texte</option>
-                                    <option value="creation_cv">📋 Création de CV</option>
-                                    <option value="lettre_motivation">✉️ Lettre de motivation</option>
-                                    <option value="convocation">📑 Convocation</option>
-                                    <option value="paiement">💳 Paiement</option>
-                                    <option value="confection_document">📁 Confection document</option>
-                                    <option value="modification_document">🖊 Modification</option>
-                                    <option value="photo_minute">📸 Photo minute</option>
-                                    <option value="envoi_document">📤 Envoi document</option>
-                                    <option value="carte_pvc">🪪 Carte PVC</option>
-                                    <option value="carnet">📘 Carnet</option>
-                                    <option value="autre">🔧 Autre</option>
+                                <div class="label">Service</div>
+
+                                <select name="service" id="service" class="form-select" required>
+
+                                    <option value="">Choisir un service</option>
+
+                                    <option value="autre">Autre</option>
+                                    <option value="carte_pvc"> Carte PVC</option>
+                                    <option value="carnet">Carnet</option>
+                                    <option value="carnet csu">Carnet CSU Goumere</option>
+                                    <option value="carnet csr">Carnet CSR Korobo</option>
+                                    <option value="carnet csr D">Carnet CSR Dadiasse</option>
+                                    <option value="carnet hg">Carnet HG Tanda</option>
+                                    <option value="confection_document">Confection document</option>
+                                    <option value="convocation">Convocation</option>
+                                    <option value="chemise">Chemise cartonée</option>
+                                    <option value="rabbat">Chemise à rabbat</option>
+                                    <option value="creation_cv">Création de CV</option>
+                                    <option value="envoi_document">Envoi document</option>
+                                    <option value="impression">Impression</option>
+                                    <option value="inscription">Inscription</option>
+                                    <option value="lettre_motivation">Lettre de motivation</option>
+                                    <option value="modification_document">Modification</option>
+                                    <option value="paiement">Paiement</option>
+                                    <option value="photo_minute">Photo minute</option>
+                                    <option value="photocopie_bn">Photocopie Blanc/Noir</option>
+                                    <option value="photocopie_couleur">Photocopie Couleur</option>
+                                    <option value="plastification">Plastification</option>
+                                    <option value="quitance">Achat de timbre</option>
+                                    <option value="reluire">Reluire</option>
+                                    <option value="traitement_texte">Traitement de texte</option>
 
                                 </select>
-                            </div>
 
+                            </div>
                             <div class="col-md-2">
                                 <div class="label">PU</div>
                                 <input type="number"
                                        name="prix_unitaire"
                                        class="form-control"
-                                       placeholder="0">
+                                       placeholder="Ex:100F">
                             </div>
 
                             <div class="col-md-2">
@@ -99,7 +117,7 @@
                                 <input type="number"
                                        name="quantite"
                                        class="form-control"
-                                       value="1">
+                                       placeholder="1" required>
                             </div>
 
                             <div class="col-md-2">
@@ -107,12 +125,12 @@
                                 <input type="number"
                                        name="montant_total"
                                        class="form-control"
-                                       placeholder="0">
+                                       placeholder="Total">
                             </div>
 
                         </div>
 
-                        <button class="btn btn-primary w-100 mt-4"
+                        <button type="submit" class="btn btn-primary w-100 mt-4"
                                 name="action"
                                 value="add_activity">
                             ➕ Ajouter activité
@@ -127,7 +145,7 @@
             <div class="card-pro">
                 <div class="table-scroll ">
 
-                    <table class="table">
+                    <table id="activity-table" class="table">
 
                         <thead>
                             <tr>
@@ -149,9 +167,10 @@
                                 <td>{{ a.service }}</td>
                                 <td><strong>{{ a.montant }} FCFA</strong></td>
                                 <td>
-                                    <a href="{% url 'supprimer_activite' a.id %}"
-                                       class="btn btn-danger btn-sm">
-                                        🗑
+                                    <a href="#"
+                                        class="btn btn-danger btn-sm delete-activity"
+                                        data-url="{% url 'supprimer_activite' a.id %}">
+                                         🗑
                                     </a>
                                 </td>
                             </tr>
@@ -177,8 +196,10 @@
             <div class="card-pro">
                 <div class="card-body">
 
-                    <form method="POST">
+                    <form id="form-depense" method="POST">
                         {% csrf_token %}
+
+                        <input type="hidden" name="action" value="save_depense">
 
                         <div class="row g-3">
 
@@ -190,7 +211,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <button class="btn btn-danger w-100"
+                                <button type="submit" class="btn btn-danger w-100"
                                         name="action"
                                         value="save_depense">
                                     Enregistrer
@@ -212,8 +233,10 @@
                         💳 Répartition des encaissements
                     </h5>
 
-                    <form method="POST">
+                    <form id="form-paiement" method="POST">
                         {% csrf_token %}
+
+                         <input type="hidden" name="action" value="save_paiement">
 
                         <div class="row g-3">
 
@@ -234,7 +257,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <button class="btn btn-primary w-100"
+                                <button type="submit" class="btn btn-primary w-100"
                                         name="action"
                                         value="save_paiement">
                                     💾 Enregistrer les paiements
@@ -336,7 +359,10 @@
 
 </div>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  
 
 <script src="{% static 'js/journal.js' %}"></script>
 <script src="{% static 'js/modal.js' %}"></script>

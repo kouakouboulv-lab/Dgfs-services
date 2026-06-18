@@ -96,34 +96,73 @@ def admin_users(request):
         password = request.POST.get("password")
         role = request.POST.get("role")
 
-        print("ROLE =", role)  # debug
+        if not username or not password:
 
-        if username and password:
+            return JsonResponse({
+                "success": False,
+                "message": "Nom d'utilisateur et mot de passe obligatoires"
+            })
 
-            if not User.objects.filter(username=username).exists():
 
-                user = User.objects.create_user(
-                    username=username,
-                    password=password
-                )
+        # Vérifier si utilisateur existe déjà
 
-                try:
-                    group = Group.objects.get(name=role)
+        if User.objects.filter(username=username).exists():
 
-                    user.groups.add(group)
+            return JsonResponse({
+                "success": False,
+                "message": "Ce nom d'utilisateur existe déjà"
+            })
 
-                    if role == "admin":
-                        user.is_staff = True
-                        user.save()
 
-                except Group.DoesNotExist:
-                    print("GROUPE INTROUVABLE :", role)
-                    user.delete()
+        # Création utilisateur
 
-        return redirect("admin_users")
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
 
-    admins = User.objects.filter(groups__name="admin")
-    users = User.objects.filter(groups__name="user")
+
+        # Ajouter le groupe
+
+        try:
+
+            group = Group.objects.get(name=role)
+
+            user.groups.add(group)
+
+
+            if role == "admin":
+
+                user.is_staff = True
+                user.save()
+
+
+        except Group.DoesNotExist:
+
+            user.delete()
+
+            return JsonResponse({
+                "success": False,
+                "message": f"Le groupe {role} n'existe pas"
+            })
+
+
+        return JsonResponse({
+            "success": True,
+            "message": "Utilisateur créé avec succès"
+        })
+
+
+    # Affichage page
+
+    admins = User.objects.filter(
+        groups__name="admin"
+    )
+
+    users = User.objects.filter(
+        groups__name="user"
+    )
+
 
     return render(
         request,
@@ -134,6 +173,7 @@ def admin_users(request):
         }
     )
 
+    
 @login_required
 @user_passes_test(is_admin)
 def delete_user(request, user_id):
@@ -143,6 +183,77 @@ def delete_user(request, user_id):
 
     return redirect("admin_users")
 
+# ================= supression =================
+
+@login_required
+def nettoyage(request):
+
+    if not request.user.is_staff:
+        return redirect("journal")
+
+    return render(
+        request,
+        "dashboard/nettoyage.html"
+    )
+
+
+@login_required
+def ajax_activites(request):
+
+    if not request.user.is_staff:
+        return JsonResponse({"error": "Accès refusé"}, status=403)
+
+    date_selectionnee = request.GET.get("date")
+
+    print("DATE RECUE :", date_selectionnee)
+
+    activites = Activite.objects.filter(
+        date=date_selectionnee
+    ).order_by("-heure")
+
+    print("NOMBRE ACTIVITES :", activites.count())
+
+
+    data = []
+
+    for a in activites:
+
+        data.append({
+            "id": a.id,
+            "client": a.client,
+            "service": a.get_service_display(),
+            "montant": a.montant,
+            "details": a.details,
+            "mode_paiement": a.get_mode_paiement_display(),
+            "date": a.date.strftime("%d/%m/%Y"),
+            "heure": a.heure.strftime("%H:%M"),
+        })
+
+
+    return JsonResponse(data, safe=False)
+
+@login_required
+def ajax_delete_activite(request, id):
+
+    if not request.user.is_staff:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+
+        activite = get_object_or_404(
+            Activite,
+            id=id
+        )
+
+        activite.delete()
+
+        return JsonResponse({
+            "success": True
+        })
+
+    return JsonResponse({
+        "success": False
+    })
 
 @login_required
 @admin_required
@@ -686,7 +797,9 @@ def journal(request):
             paiement.especes = especes
             paiement.save()
 
-            return redirect("journal")
+            return JsonResponse({
+                "success": True
+            })
 
         # ================= DEPENSE =================
 
@@ -701,7 +814,9 @@ def journal(request):
                     date=today
                 )
 
-            return redirect("journal")
+            return JsonResponse({
+                "success": True
+            })
 
         # ================= ACTIVITE =================
 
@@ -723,18 +838,35 @@ def journal(request):
 
             service = request.POST.get("service")
 
+            prix_unitaire_raw = request.POST.get("prix_unitaire")
+
+            montant_total_raw = request.POST.get("montant_total")
+
+
+            # Vérifier qu'au moins une valeur existe
+            if not prix_unitaire_raw and not montant_total_raw:
+
+                return JsonResponse({
+                    "success": False,
+                    "message": "Veuillez renseigner le prix unitaire ou le montant total"
+                })
+
+
+
             prix_unitaire = safe_float(
-                request.POST.get("prix_unitaire"),
+                prix_unitaire_raw,
                 0
             )
+
 
             quantite = safe_float(
                 request.POST.get("quantite"),
                 0
             )
 
+
             montant_total = safe_float(
-                request.POST.get("montant_total"),
+                montant_total_raw,
                 0
             )
 
@@ -756,7 +888,9 @@ def journal(request):
                 date=today
             )
 
-            return redirect("journal")
+            return JsonResponse({
+                "success": True
+            })
 
     # ================= DATE =================
 
@@ -898,8 +1032,21 @@ def journal(request):
 # ================= SUPPRESSION =================
 def supprimer_activite(request, id):
 
-    activite = get_object_or_404(Activite, id=id)
+    activite = get_object_or_404(
+        Activite,
+        id=id
+    )
+
+
     activite.delete()
+
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+
+        return JsonResponse({
+            "success": True
+        })
+
 
     return redirect("journal")
 

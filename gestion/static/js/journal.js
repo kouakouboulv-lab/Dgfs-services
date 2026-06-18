@@ -1,148 +1,576 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function(){
+
 
     sendForm("form-activity");
+
     sendForm("form-depense");
+
     sendForm("form-paiement");
+
 
 });
 
 
+
+
 // ==========================
-// SUBMIT AJAX
+// ENVOI AJAX FORMULAIRE
 // ==========================
-function sendForm(formId) {
+
+function sendForm(formId){
+
 
     const form = document.getElementById(formId);
 
-    if (!form) return;
 
-    form.addEventListener("submit", async function (e) {
+    if(!form) return;
 
-        e.preventDefault();
 
-        const formData = new FormData(this);
 
-        try {
+    form.addEventListener(
+        "submit",
+        async function(e){
 
-            const response = await fetch("", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+
+            e.preventDefault();
+
+
+            const formData = new FormData(this);
+
+
+
+            try{
+
+
+                const response = await fetch(
+                    window.location.href,
+                    {
+
+                        method:"POST",
+
+                        body:formData,
+
+
+                        headers:{
+
+
+                            "X-Requested-With":
+                            "XMLHttpRequest"
+
+
+                        }
+
+
+                    }
+
+                );
+
+
+
+                const data = await response.json();
+
+
+
+                console.log(
+                    "Réponse serveur :",
+                    data
+                );
+
+
+
+                if(data.success){
+
+
+                    showToast(
+                        "Enregistrement effectué avec succès ✅",
+                        "success"
+                    );
+
+                    this.reset();
+
+                    refreshTable();
+
+                    refreshData();
+
                 }
-            });
+                else{
 
-            const data = await response.json();
 
-            if (data.success) {
+                    showToast(
+                        "Erreur! veillez renseigner PU ou Total",
+                        "error"
+                    );
 
-                this.reset();
 
-                // 🔥 mise à jour avec animation
-                refreshData();
+                }
 
-                console.log("Enregistré");
+
+
             }
 
-        } catch (error) {
-            console.error(error);
+            catch(error){
+
+
+                console.error(
+                    "Erreur AJAX :",
+                    error
+                );
+
+
+                showToast(
+                    "Erreur serveur",
+                    "error"
+                );
+
+
+            }
+
+
+
         }
+
+    );
+
+
+}
+
+// ==========================
+// CREATION TOAST
+// ==========================
+
+
+function showToast(message,type="success"){
+
+
+
+    const toast = document.createElement("div");
+
+
+
+    toast.className =
+        "toast-box " + type;
+
+
+
+    toast.innerHTML = message;
+
+
+
+    document.body.appendChild(toast);
+
+
+
+
+    setTimeout(()=>{
+
+
+        toast.classList.add(
+            "hide"
+        );
+
+
+        setTimeout(()=>{
+
+
+            toast.remove();
+
+
+        },300);
+
+
+
+    },2500);
+
+
+
+}
+
+// ==========================
+// RAFRAICHIR LES DONNEES
+// ==========================
+
+
+async function refreshData(){
+
+
+    try{
+
+
+        const response = await fetch(
+            "/journal-stats/",
+            {
+
+                headers:{
+
+
+                    "X-Requested-With":
+                    "XMLHttpRequest"
+
+
+                }
+
+            }
+
+        );
+
+
+
+        if(!response.ok)
+            return;
+
+
+
+        const data =
+            await response.json();
+
+
+
+        animateCounter(
+            "total-revenus",
+            data.total || 0
+        );
+
+
+
+        animateCounter(
+            "total-depenses",
+            data.depenses || 0
+        );
+
+
+
+        animateCounter(
+            "total-mobile",
+            data.mobile_money || 0
+        );
+
+
+
+        animateCounter(
+            "total-especes",
+            data.especes || 0
+        );
+
+
+
+
+    }
+
+    catch(error){
+
+
+        console.error(
+            "Erreur refresh",
+            error
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+// ==========================
+// COMPTEUR ANIME
+// ==========================
+
+
+function animateCounter(id,value){
+
+
+    const element =
+        document.getElementById(id);
+
+
+
+    if(!element)
+        return;
+
+
+
+    let start = 0;
+
+
+
+    const duration = 700;
+
+
+
+    const step =
+        value / (duration / 20);
+
+
+
+    clearInterval(
+        element.timer
+    );
+
+
+
+    element.timer =
+    setInterval(()=>{
+
+
+        start += step;
+
+
+
+        if(start >= value){
+
+
+            start=value;
+
+
+            clearInterval(
+                element.timer
+            );
+
+
+        }
+
+
+
+        element.textContent =
+        Math.floor(start)
+        .toLocaleString()
+        +" FCFA";
+
+
+
+    },20);
+
+
+
+}
+
+async function refreshTable(){
+
+    try{
+
+
+        const response = await fetch(
+            window.location.href,
+            {
+                headers:{
+                    "X-Requested-With":"XMLHttpRequest"
+                }
+            }
+        );
+
+
+        const html = await response.text();
+
+
+
+        const parser = new DOMParser();
+
+
+        const doc = parser.parseFromString(
+            html,
+            "text/html"
+        );
+
+
+
+        const nouveauTableau =
+        doc.querySelector("#activity-table");
+
+
+
+        const ancienTableau =
+        document.querySelector("#activity-table");
+
+
+
+        if(nouveauTableau && ancienTableau){
+
+            ancienTableau.innerHTML =
+            nouveauTableau.innerHTML;
+
+        }
+
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Erreur actualisation tableau :",
+            error
+        );
+
+    }
+
+}
+
+// ==========================
+// SUPPRESSION AJAX ACTIVITE
+// ==========================
+
+document.addEventListener(
+    "click",
+    async function(e){
+
+
+        if(e.target.closest(".delete-activity")){
+
+
+            e.preventDefault();
+
+
+
+            const button =
+            e.target.closest(".delete-activity");
+
+
+
+            const url =
+            button.dataset.url;
+
+
+
+            if(!confirm("Supprimer cette activité ?"))
+                return;
+
+
+
+
+            try{
+
+
+                const response =
+                await fetch(
+                    url,
+                    {
+
+                        method:"POST",
+
+                        headers:{
+
+
+                            "X-Requested-With":
+                            "XMLHttpRequest",
+
+
+                            "X-CSRFToken":
+                            getCookie("csrftoken")
+
+
+                        }
+
+
+                    }
+
+                );
+
+
+
+                const data =
+                await response.json();
+
+
+
+                if(data.success){
+
+
+                    showToast(
+                        "Activité supprimée ✅"
+                    );
+
+
+                    refreshTable();
+
+
+                    refreshData();
+
+
+                }
+
+
+
+            }
+
+            catch(error){
+
+
+                console.error(
+                    "Erreur suppression :",
+                    error
+                );
+
+
+            }
+
+
+        }
+
+
+    }
+
+);
+
+
+
+// Récupérer CSRF Django
+
+function getCookie(name){
+
+    let cookieValue = null;
+
+
+    if(document.cookie){
+
+        const cookies =
+        document.cookie.split(";");
+
+
+        for(let cookie of cookies){
+
+
+            cookie = cookie.trim();
+
+
+
+            if(cookie.startsWith(name+"=")){
+
+
+                cookieValue =
+                decodeURIComponent(
+                    cookie.substring(
+                        name.length+1
+                    )
+                );
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return cookieValue;
+
+}
+
+
+$(document).ready(function(){
+
+    $('#service').select2({
+
+        placeholder: "Rechercher un service",
+
+        allowClear: true,
+
+        width: '100%'
 
     });
 
-}
+});
 
-
-// ==========================
-// ANIMATE COUNTER
-// ==========================
-function animateCounter(element, target, duration = 800) {
-
-    if (!element) return;
-
-    clearInterval(element._counter);
-
-    let start = 0;
-    const stepTime = 10;
-    const steps = duration / stepTime;
-    const increment = target / steps;
-
-    element._counter = setInterval(() => {
-
-        start += increment;
-
-        if (start >= target) {
-            start = target;
-            clearInterval(element._counter);
-        }
-
-        element.textContent = `${Math.floor(start)} FCFA`;
-
-    }, stepTime);
-}
-
-
-// ==========================
-// REFRESH DATA
-// ==========================
-async function refreshData() {
-
-    try {
-
-        const response = await fetch(`/journal-stats/?date=${selectedDate}`, {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        });
-
-        if (!response.ok) return;
-
-        const data = await response.json();
-
-        const revenus = document.getElementById("total-revenus");
-        const depenses = document.getElementById("total-depenses");
-        const mobile = document.getElementById("total-mobile");
-        const especes = document.getElementById("total-especes");
-
-        if (revenus) animateCounter(revenus, data.total || 0);
-        if (depenses) animateCounter(depenses, data.depenses || 0);
-        if (mobile) animateCounter(mobile, data.mobile_money || 0);
-        if (especes) animateCounter(especes, data.especes || 0);
-
-    } catch (error) {
-        console.error("refreshData error:", error);
-    }
-}
-
-function countUp(element, target, duration = 900) {
-
-    if (!element) return;
-
-    let start = 0;
-    const stepTime = 10;
-    const steps = duration / stepTime;
-    const increment = target / steps;
-
-    let current = 0;
-
-    const timer = setInterval(() => {
-
-        current += increment;
-
-        if (current >= target) {
-            current = target;
-            clearInterval(timer);
-        }
-
-        element.textContent = Math.floor(current).toLocaleString();
-    }, stepTime);
-}
-
-function animateStats() {
-
-    countUp(document.getElementById("total-revenus"), window.__TOTAL_REVENUS__ || 0);
-    countUp(document.getElementById("total-depenses"), window.__TOTAL_DEPENSES__ || 0);
-    countUp(document.getElementById("total-mobile"), window.__TOTAL_MOBILE__ || 0);
-    countUp(document.getElementById("total-especes"), window.__TOTAL_ESPECES__ || 0);
-
-}
