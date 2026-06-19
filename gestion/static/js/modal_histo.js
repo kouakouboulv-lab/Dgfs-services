@@ -1,12 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 
-    const modal = document.getElementById("dayModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalBody = document.getElementById("modalBody");
+    function getModal(){
 
+        return {
+            modal: document.getElementById("dayModal"),
+            title: document.getElementById("modalTitle"),
+            body: document.getElementById("modalBody")
+        };
 
-    if(!modal) return;
+    }
 
 
 
@@ -16,15 +19,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.openModal = function(title, content){
 
+
+        const {modal, title: modalTitle, body: modalBody} = getModal();
+
+
+        if(!modal) return;
+
+
         modal.classList.add("show");
+
 
         modalTitle.innerHTML = title;
 
+
         modalBody.innerHTML = content;
+
 
         document.body.style.overflow = "hidden";
 
+
     };
+
+
 
 
 
@@ -34,19 +50,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.closeModal = function(){
 
+
+        const {modal} = getModal();
+
+
+        if(!modal) return;
+
+
         modal.classList.remove("show");
 
+
         document.body.style.overflow = "";
+
 
     };
 
 
 
+
+
     // ==========================
-    // FERMETURE OVERLAY
+    // OVERLAY
     // ==========================
 
     window.overlayClose = function(event){
+
 
         if(event.target.id === "dayModal"){
 
@@ -54,21 +82,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
     };
 
 
 
+
+
     // ==========================
-    // ESC POUR FERMER
+    // ESC
     // ==========================
 
-    document.addEventListener("keydown", (e)=>{
+    document.addEventListener("keydown", e=>{
+
 
         if(e.key === "Escape"){
 
             closeModal();
 
         }
+
 
     });
 
@@ -77,11 +110,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ==========================
-    // CLICK JOUR CALENDRIER
-    // (fonctionne après AJAX)
+    // CLICK CALENDRIER
     // ==========================
 
-    document.addEventListener("click", async (e)=>{
+    document.addEventListener("click", async e=>{
 
 
         const day = e.target.closest(".calendar-click");
@@ -98,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-        // sélection jour
 
         document.querySelectorAll(".calendar-click")
         .forEach(el=>{
@@ -137,9 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-
             const data = await response.json();
-
 
 
 
@@ -161,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
                 <div class="day-kpi">
 
                     <small>📱 Mobile Money</small>
@@ -174,8 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
                 <div class="day-kpi">
 
                     <small>💵 Espèces</small>
@@ -185,8 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     </strong>
 
                 </div>
-
-
 
 
 
@@ -212,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if(!data.activites || data.activites.length === 0){
 
 
-
                 html += `
 
                 <div class="text-center text-muted py-4">
@@ -224,16 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
 
-
             }else{
 
 
-
-                html += `
-
-                <div class="activities-list">
-
-                `;
+                html += `<div class="activities-list">`;
 
 
 
@@ -256,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
 
 
-
                             <div class="modal-total">
 
                                 ${a.montant} FCFA
@@ -268,13 +284,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
                         <div class="modal-service">
 
                             ${a.service}
 
                         </div>
-
 
 
                     </div>
@@ -286,28 +300,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
 
-
                 html += `</div>`;
+
 
             }
 
 
 
-
-            modalBody.innerHTML = html;
+            document.getElementById("modalBody").innerHTML = html;
 
 
 
         }catch(error){
 
 
-
             console.error(error);
 
 
-
-            modalBody.innerHTML = `
-
+            document.getElementById("modalBody").innerHTML = `
 
             <div class="text-center text-danger py-4">
 
@@ -315,16 +325,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             </div>
 
-
             `;
 
 
         }
 
 
-
     });
-
 
 
 });
