@@ -177,11 +177,22 @@
             <div class="stat-top">
 
                 <div>
-                    <div class="stat-title">Meilleur Jour</div>
-                    <div class="stat-value" style="font-size:20px">
-                        {{ meilleur_jour }}
+                    <div class="stat-title">
+                        Meilleur Jour
                     </div>
+
+                    <div class="stat-value" style="font-size:20px">
+
+                        {% if meilleur_jour %}
+                            {{ meilleur_jour|date:"l d F Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </div>
+
                 </div>
+
 
                 <div class="stat-icon bg-success">
                     <i class="bi bi-calendar-check"></i>
@@ -189,8 +200,10 @@
 
             </div>
 
+
             <div class="stat-bottom">
-                Plus forte recette
+                Plus forte recette :
+                {{ meilleur_jour_data }} FCFA
             </div>
 
         </div>

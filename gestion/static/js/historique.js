@@ -5,7 +5,6 @@ async function goToDate() {
     const month = document.getElementById("monthSelect").value;
     const year = document.getElementById("yearSelect").value;
 
-
     const response = await fetch(
         `?mois=${month}&annee=${year}`,
         {
@@ -15,33 +14,24 @@ async function goToDate() {
         }
     );
 
-
     const html = await response.text();
 
+    console.log(html); // <-- AJOUTE ÇA
 
     const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
 
-    const doc = parser.parseFromString(
-        html,
-        "text/html"
-    );
+    const newDashboard =
+        doc.querySelector("#dashboard-content");
 
+    console.log(newDashboard); // <-- AJOUTE ÇA
 
-    // Remplace seulement le calendrier
-    const newCalendar = doc.querySelector(".calendar-grid");
-
-
-    document.querySelector(".calendar-grid").innerHTML =
-        newCalendar.innerHTML;
-
-
+    document.querySelector("#dashboard-content").innerHTML =
+        newDashboard.innerHTML;
 
     initCalendar();
-
     initChart();
-
     animateKPI();
-
 }
 
 
@@ -106,6 +96,7 @@ function initChart() {
     gradientDepense.addColorStop(0, "rgba(220,38,38,0.30)");
     gradientDepense.addColorStop(1, "rgba(220,38,38,0)");
 
+    
     chartInstance = new Chart(ctx, {
 
         type: "line",

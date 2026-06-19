@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
 
 
+
 # ================= LOGIN =================
 
 def login_user(request):
@@ -204,34 +205,86 @@ def ajax_activites(request):
     if not request.user.is_staff:
         return JsonResponse({"error": "Accès refusé"}, status=403)
 
+
     date_selectionnee = request.GET.get("date")
 
-    print("DATE RECUE :", date_selectionnee)
 
     activites = Activite.objects.filter(
         date=date_selectionnee
     ).order_by("-heure")
 
-    print("NOMBRE ACTIVITES :", activites.count())
+
+    depenses = Depense.objects.filter(
+        date=date_selectionnee
+    )
 
 
-    data = []
+    paiement = PaiementJour.objects.filter(
+        date=date_selectionnee
+    ).first()
+
+
+
+    data = {
+
+        "activites": [],
+
+        "depenses": [],
+
+        "paiement": {
+
+            "mobile_money": paiement.mobile_money if paiement else 0,
+
+            "especes": paiement.especes if paiement else 0
+
+        }
+
+    }
+
+
 
     for a in activites:
 
-        data.append({
+        data["activites"].append({
+
             "id": a.id,
+
             "client": a.client,
+
             "service": a.get_service_display(),
+
             "montant": a.montant,
+
             "details": a.details,
+
             "mode_paiement": a.get_mode_paiement_display(),
+
             "date": a.date.strftime("%d/%m/%Y"),
+
             "heure": a.heure.strftime("%H:%M"),
+
         })
 
 
-    return JsonResponse(data, safe=False)
+
+
+    for d in depenses:
+
+        data["depenses"].append({
+
+            "id": d.id,
+
+            "libelle": d.libelle,
+
+            "motif": d.motif,
+
+            "montant": d.montant
+
+        })
+
+
+
+    return JsonResponse(data)
 
 @login_required
 def ajax_delete_activite(request, id):
@@ -255,6 +308,114 @@ def ajax_delete_activite(request, id):
     return JsonResponse({
         "success": False
     })
+
+
+@login_required
+def delete_all_activites(request):
+
+    if not request.user.is_staff:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        date_str = data.get("date")
+
+        count = Activite.objects.filter(
+            date=date_str
+        ).count()
+
+        Activite.objects.filter(
+            date=date_str
+        ).delete()
+
+        return JsonResponse({
+            "success": True,
+            "count": count
+        })
+
+    return JsonResponse({"success": False})
+
+
+@login_required
+def delete_all_depenses(request):
+
+    if not request.user.is_staff:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        date_str = data.get("date")
+
+        count = Depense.objects.filter(
+            date=date_str
+        ).count()
+
+        Depense.objects.filter(
+            date=date_str
+        ).delete()
+
+        return JsonResponse({
+            "success": True,
+            "count": count
+        })
+
+    return JsonResponse({"success": False})
+
+@login_required
+def delete_mobile(request):
+
+    if not request.user.is_staff:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        date_str = data.get("date")
+
+        paiement = PaiementJour.objects.filter(
+            date=date_str
+        ).first()
+
+        if paiement:
+            paiement.mobile_money = 0
+            paiement.save()
+
+        return JsonResponse({
+            "success": True
+        })
+
+    return JsonResponse({"success": False})
+
+@login_required
+def delete_especes(request):
+
+    if not request.user.is_staff:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        date_str = data.get("date")
+
+        paiement = PaiementJour.objects.filter(
+            date=date_str
+        ).first()
+
+        if paiement:
+            paiement.especes = 0
+            paiement.save()
+
+        return JsonResponse({
+            "success": True
+        })
+
+    return JsonResponse({"success": False})
 
 @login_required
 @admin_required
@@ -362,22 +523,23 @@ def statistiques(request):
         if service_vedette_data
         else "Aucun"
     )
-
+    
     # ================= MEILLEUR JOUR =================
 
     meilleur_jour_data = (
         activites
+        .exclude(date__isnull=True)
         .values("date")
         .annotate(total=Sum("montant"))
         .order_by("-total")
         .first()
     )
 
-    meilleur_jour = (
-        meilleur_jour_data["date"].strftime("%d/%m/%Y")
-        if meilleur_jour_data and meilleur_jour_data["date"]
-        else "-"
-    )
+    meilleur_jour = None
+
+    if meilleur_jour_data:
+        meilleur_jour = meilleur_jour_data["date"]
+   
 
     # ================= MOYENNE JOURNALIERE =================
 

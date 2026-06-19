@@ -68,6 +68,26 @@ urlpatterns = [
     ),
 
     path(
+        "ajax/delete-all-activites/",
+        views.delete_all_activites
+    ),
+
+    path(
+        "ajax/delete-all-depenses/",
+        views.delete_all_depenses
+    ),
+
+    path(
+        "ajax/delete-mobile/",
+        views.delete_mobile
+    ),
+
+    path(
+        "ajax/delete-especes/",
+        views.delete_especes
+    ),
+
+    path(
         "ajax/delete-activite/<int:id>/",
         views.ajax_delete_activite,
         name="ajax_delete_activite"

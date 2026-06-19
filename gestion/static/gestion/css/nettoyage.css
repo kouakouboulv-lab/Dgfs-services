@@ -1,183 +1,527 @@
 /* =========================
-   PAGE NETTOYAGE
+   PAGE NETTOYAGE DASHBOARD
 ========================= */
 
+
 .nettoyage-page {
-    padding: 20px;
+
+    padding: 25px;
+
+    background: #f5f7fb;
+
+    min-height: 100vh;
+
 }
 
 
-/* TITRE */
+
+/* =========================
+   HEADER
+========================= */
+
 
 .nettoyage-page h2 {
-    font-weight: 700;
-    color: #343a40;
+
+    font-weight: 800;
+
+    color: #1f2937;
+
+    letter-spacing: .3px;
+
 }
 
 
-/* BOUTON RETOUR */
+
+
+
+/* =========================
+   BOUTON RETOUR
+========================= */
+
 
 .btn-retour {
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-weight: 600;
-    transition: 0.3s;
+
+    border-radius: 12px;
+
+    padding: 10px 22px;
+
+    font-weight: 700;
+
+    border: none;
+
+    transition: .3s;
+
 }
+
 
 .btn-retour:hover {
-    transform: translateX(-4px);
+
+    transform: translateX(-6px);
+
 }
 
 
-/* RECHERCHE DATE */
+
+/* =========================
+   RECHERCHE
+========================= */
+
 
 #datePicker {
 
-    border-radius: 10px;
-    height: 42px;
-    width: 180px;
+
+    height: 45px;
+
+    width: 200px;
+
+    border-radius: 14px;
+
+    border: 1px solid #ddd;
+
+    padding: 0 15px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,.05);
+
 
 }
+
 
 
 .btn-primary {
 
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-weight: 600;
+
+    border-radius: 14px;
+
+    padding: 10px 25px;
+
+    font-weight: 700;
+
+    box-shadow: 0 5px 15px rgba(13,110,253,.25);
+
+    transition:.3s;
 
 }
 
 
-/* CARTES */
+
+.btn-primary:hover {
+
+
+    transform: translateY(-3px);
+
+
+}
+
+
+
+
+
+/* =========================
+   CARTES PRINCIPALES
+========================= */
+
 
 .card {
 
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
+
+    border:none;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 10px 25px rgba(0,0,0,.08);
+
 
 }
+
+
+
 
 
 .card-header {
 
-    font-weight: 700;
-    font-size: 17px;
+
+    padding:18px;
+
+    font-size:18px;
+
+    font-weight:800;
+
 
 }
 
 
-/* LISTE ACTIVITES */
+
+
+/* =========================
+   LISTE
+========================= */
+
 
 #listeActivites {
 
-    background: #ffffff;
+
+    background:white;
 
 }
+
+
+
 
 
 .activite-item {
 
-    transition: 0.25s;
-    background: white;
+
+    padding:18px !important;
+
+    transition:.25s;
+
+    border-left:4px solid transparent;
+
 
 }
+
+
 
 
 .activite-item:hover {
 
-    background: #f1f5ff;
-    transform: translateX(5px);
+
+    background:#eef4ff;
+
+
+    border-left:4px solid #0d6efd;
+
+
+    transform:translateX(6px);
+
 
 }
+
+
+
 
 
 .activite-item strong {
 
-    color: #212529;
-    font-size: 16px;
+
+    font-size:17px;
+
+    color:#111827;
+
 
 }
 
 
-/* DETAILS */
+
+
+
+
+
+/* =========================
+   DETAILS
+========================= */
+
 
 #detailsActivite {
 
-    background: #fafafa;
-    border-radius: 0 0 15px 15px;
+
+    background:#ffffff;
+
+    padding:25px;
+
 
 }
+
+
+
 
 
 #detailsActivite h3 {
 
-    font-weight: 700;
-    color: #198754;
+
+    font-size:28px;
+
+    font-weight:900;
+
+    color:#198754;
+
 
 }
 
 
-/* PETITES CARTES DETAILS */
+
+
 
 #detailsActivite .card {
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+    border-radius:16px;
+
+    box-shadow:
+
+    0 5px 15px rgba(0,0,0,.06);
+
 
 }
+
+
+
+
+
+#detailsActivite .card-body {
+
+
+    padding:20px;
+
+
+}
+
+
+
 
 
 #detailsActivite h6 {
 
-    color: #6c757d;
-    font-weight: 700;
+
+    text-transform:uppercase;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+    color:#6b7280;
+
+    font-weight:800;
+
 
 }
 
 
-/* BOUTON SUPPRESSION */
+
+
+
+#detailsActivite p {
+
+
+    font-size:17px;
+
+    font-weight:600;
+
+    color:#374151;
+
+
+}
+
+
+
+
+
+/* =========================
+   BOUTONS SUPPRESSION
+========================= */
+
+
+#actionsSuppression button {
+
+
+    border-radius:14px;
+
+    padding:11px 18px;
+
+    font-weight:800;
+
+    border:none;
+
+    transition:.25s;
+
+
+}
+
+
+
+#actionsSuppression button:hover {
+
+
+    transform:translateY(-4px);
+
+}
+
+
+
+
 
 .btn-danger {
 
-    border-radius: 10px;
-    padding: 12px 25px;
-    font-weight: 600;
+
+    border-radius:14px !important;
+
+    padding:12px 25px !important;
+
+    font-weight:800 !important;
+
 
 }
+
 
 
 .btn-danger:hover {
 
-    transform: scale(1.03);
+
+    transform:scale(1.05);
+
 
 }
 
 
-/* RESPONSIVE MOBILE */
+
+
+
+.btn-warning {
+
+
+    color:white;
+
+}
+
+
+
+
+
+/* =========================
+   DEPENSES
+========================= */
+
+
+.bg-light {
+
+
+    border-left:5px solid #ffc107;
+
+    margin-bottom:8px;
+
+    border-radius:10px;
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+   SCROLL LISTE
+========================= */
+
+
+#listeActivites::-webkit-scrollbar {
+
+
+    width:8px;
+
+
+}
+
+
+
+#listeActivites::-webkit-scrollbar-thumb {
+
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+   MOBILE
+========================= */
+
 
 @media(max-width:768px){
 
-    .d-flex.justify-content-between {
-
-        flex-direction: column;
-        gap:15px;
-
-    }
 
 
-    #datePicker {
-
-        width:100%;
-
-    }
+.nettoyage-page {
 
 
-    .btn-primary {
+    padding:15px;
 
-        width:100%;
 
-    }
+}
+
+
+
+.d-flex.justify-content-between {
+
+
+    flex-direction:column;
+
+    gap:20px;
+
+
+}
+
+
+
+#datePicker {
+
+
+    width:100%;
+
+
+}
+
+
+
+.btn-primary {
+
+
+    width:100%;
+
+
+}
+
+
+
+#actionsSuppression {
+
+
+    width:100%;
+
+}
+
+
+
+#actionsSuppression button {
+
+
+    width:100%;
+
+
+}
+
+
+
+#detailsActivite h3 {
+
+
+    font-size:22px;
+
+
+}
 
 
 }
