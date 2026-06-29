@@ -26,101 +26,101 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === "Escape") closeModal();
     });
 
-    document.querySelectorAll(".calendar-click").forEach(day => {
+    document.addEventListener("click", async function (e) {
 
-        day.addEventListener("click", async () => {
+        const day = e.target.closest(".calendar-click");
 
-            const date = day.dataset.date;
+        if (!day) return;
 
-            document.querySelectorAll(".calendar-click").forEach(el => {
-                el.classList.remove("selected");
-            });
+        const date = day.dataset.date;
 
-            day.classList.add("selected");
+        document.querySelectorAll(".calendar-click").forEach(el => {
+            el.classList.remove("selected");
+        });
 
-            openModal(`📅 ${date}`, `<div class="text-center py-4">Chargement...</div>`);
+        day.classList.add("selected");
 
-            try {
+        openModal(`📅 ${date}`, `<div class="text-center py-4">Chargement...</div>`);
 
-                const response = await fetch(`/journal-details/?date=${date}`);
-                const data = await response.json();
+        try {
 
-                let html = `
-                    <div class="day-kpis">
+            const response = await fetch(`/journal-details/?date=${date}`);
+            const data = await response.json();
 
-                        <div class="day-kpi">
-                            <small>💰 Revenus</small>
-                            <strong>${data.total_revenu || 0} FCFA</strong>
-                        </div>
+            let html = `
+                <div class="day-kpis">
 
-                        <div class="day-kpi">
-                            <small>📱 Mobile Money</small>
-                            <strong>${data.total_mobile || 0} FCFA</strong>
-                        </div>
-
-                        <div class="day-kpi">
-                            <small>💵 Espèces</small>
-                            <strong>${data.total_cash || 0} FCFA</strong>
-                        </div>
-
-                        <div class="day-kpi">
-                            <small>💸 Dépenses</small>
-                            <strong>${data.total_depense || 0} FCFA</strong>
-                        </div>
-
+                    <div class="day-kpi">
+                        <small>💰 Revenus</small>
+                        <strong>${data.total_revenu || 0} FCFA</strong>
                     </div>
-                `;
 
-                if (!data.activites || data.activites.length === 0) {
+                    <div class="day-kpi">
+                        <small>📱 Mobile Money</small>
+                        <strong>${data.total_mobile || 0} FCFA</strong>
+                    </div>
 
-                    html += `<div class="text-center text-muted py-4">
-                        Aucune activité enregistrée ce jour.
-                    </div>`;
+                    <div class="day-kpi">
+                        <small>💵 Espèces</small>
+                        <strong>${data.total_cash || 0} FCFA</strong>
+                    </div>
 
-                } else {
+                    <div class="day-kpi">
+                        <small>💸 Dépenses</small>
+                        <strong>${data.total_depense || 0} FCFA</strong>
+                    </div>
 
-                    html += `<div class="activities-list">`;
+                </div>
+            `;
 
-                    data.activites.forEach(a => {
+            if (!data.activites || data.activites.length === 0) {
 
-                        html += `
-                            <div class="modal-item">
+                html += `<div class="text-center text-muted py-4">
+                    Aucune activité enregistrée ce jour.
+                </div>`;
 
-                                <div class="modal-item-header">
+            } else {
 
-                                    <div class="modal-client">
-                                        👤 ${a.client}
-                                    </div>
+                html += `<div class="activities-list">`;
 
-                                    <div class="modal-total">
-                                        ${a.montant} FCFA
-                                    </div>
+                data.activites.forEach(a => {
 
+                    html += `
+                        <div class="modal-item">
+
+                            <div class="modal-item-header">
+
+                                <div class="modal-client">
+                                    👤 ${a.client}
                                 </div>
 
-                                <div class="modal-service">
-                                    ${a.service}
+                                <div class="modal-total">
+                                    ${a.montant} FCFA
                                 </div>
 
                             </div>
-                        `;
-                    });
 
-                    html += `</div>`;
-                }
+                            <div class="modal-service">
+                                ${a.service}
+                            </div>
 
-                modalBody.innerHTML = html;
+                        </div>
+                    `;
+                });
 
-            } catch (error) {
-
-                modalBody.innerHTML = `
-                    <div class="text-center text-danger py-4">
-                        ❌ Impossible de charger les données.
-                    </div>
-                `;
+                html += `</div>`;
             }
 
-        });
+            modalBody.innerHTML = html;
+
+        } catch (error) {
+
+            modalBody.innerHTML = `
+                <div class="text-center text-danger py-4">
+                    ❌ Impossible de charger les données.
+                </div>
+            `;
+        }
 
     });
 

@@ -1177,22 +1177,23 @@ def journal(request):
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
 
-        html = render_to_string(
+        return render(
+            request,
             "gestion/html/journal.html",
             {
+                "activites": activites,
+                "total": total,
+                "total_depenses": total_depenses,
+                "benefice": benefice,
                 "calendrier": calendrier,
                 "empty_start": empty_start,
                 "empty_end": empty_end,
                 "mois_nom": mois_nom,
                 "annee": annee,
-            },
-            request=request
+                "mobile_money": mobile_money,
+                "especes": especes,
+            }
         )
-
-
-        return JsonResponse({
-            "calendar": html
-        })
 
     return render(
         request,

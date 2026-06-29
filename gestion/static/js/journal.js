@@ -535,6 +535,8 @@ async function refreshCalendar(){
 
 
         const html = await response.text();
+        console.log("Réponse calendrier :", html);
+        console.log(typeof html);
 
 
         const parser = new DOMParser();
@@ -553,18 +555,12 @@ async function refreshCalendar(){
         const ancienCalendrier =
         document.querySelector("#calendar-container");
 
-
-
-        if(nouveauCalendrier && ancienCalendrier){
+        if (nouveauCalendrier && ancienCalendrier) {
 
             ancienCalendrier.innerHTML =
-            nouveauCalendrier.innerHTML;
-
-
-            reloadCalendarClick();
+                nouveauCalendrier.innerHTML;
 
         }
-
 
     }
 
