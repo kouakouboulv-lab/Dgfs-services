@@ -112,7 +112,9 @@ function initChart() {
                     borderRadius: 0,
                     borderSkipped: false,
 
-                    barThickness: 30
+                    categoryPercentage: 0.8,
+                    barPercentage: 0.9,
+                    maxBarThickness: 18
                 },
 
                 // Revenus (au-dessus)
@@ -129,7 +131,9 @@ function initChart() {
                     borderRadius: 0,
                     borderSkipped: false,
 
-                    barThickness: 30
+                    categoryPercentage: 0.8,
+                    barPercentage: 0.9,
+                    maxBarThickness: 18
                 }
 
             ]
@@ -169,7 +173,6 @@ function initChart() {
                 tooltip: {
 
                     backgroundColor: "#0f172a",
-
                     padding: 12,
 
                     callbacks: {
@@ -188,21 +191,25 @@ function initChart() {
             scales: {
 
                 x: {
+
                     stacked: true,
+                    offset: true,
 
                     grid: {
                         display: false
                     },
 
                     ticks: {
-                        color: "#64748b"
+                        color: "#64748b",
+                        autoSkip: true,
+                        maxRotation: 0,
+                        minRotation: 0
                     }
                 },
 
                 y: {
 
                     stacked: true,
-
                     beginAtZero: true,
 
                     grid: {
