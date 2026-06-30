@@ -70,82 +70,68 @@ function calendarHandler(e){
 
 /* ================= CHART ================= */
 
+/* ================= CHART ================= */
+
 let chartInstance = null;
 
 function initChart() {
-  
+
     const el = document.getElementById("chart-data");
     const canvas = document.getElementById("chart");
 
     if (!el || !canvas) return;
 
     const data = JSON.parse(el.textContent);
-    console.log(typeof data);
-    
+
     if (chartInstance) {
         chartInstance.destroy();
     }
 
     const ctx = canvas.getContext("2d");
 
-    const gradientRevenue = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientRevenue.addColorStop(0, "rgba(37,99,235,0.35)");
-    gradientRevenue.addColorStop(1, "rgba(37,99,235,0)");
-
-    const gradientDepense = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientDepense.addColorStop(0, "rgba(220,38,38,0.30)");
-    gradientDepense.addColorStop(1, "rgba(220,38,38,0)");
-
-    
     chartInstance = new Chart(ctx, {
 
-        type: "line",
+        type: "bar",
 
         data: {
             labels: data.labels,
 
             datasets: [
-                {
-                    label: "Revenus",
-                    data: data.revenus,
 
-                    borderColor: "#2563eb",
-                    backgroundColor: gradientRevenue,
-
-                    fill: true,
-
-                    borderWidth: 4,
-
-                    tension: 0.4,
-
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-
-                    pointBackgroundColor: "#2563eb",
-                    pointBorderColor: "#fff",
-                    pointBorderWidth: 2
-                },
-
+                // Dépenses (en bas)
                 {
                     label: "Dépenses",
                     data: data.depenses,
 
-                    borderColor: "#dc2626",
-                    backgroundColor: gradientDepense,
+                    backgroundColor: "#dc2626",
+                    borderColor: "#b91c1c",
+                    borderWidth: 1,
 
-                    fill: true,
+                    stack: "total",
 
-                    borderWidth: 4,
+                    borderRadius: 0,
+                    borderSkipped: false,
 
-                    tension: 0.4,
+                    barThickness: 30
+                },
 
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
+                // Revenus (au-dessus)
+                {
+                    label: "Revenus",
+                    data: data.revenus,
 
-                    pointBackgroundColor: "#dc2626",
-                    pointBorderColor: "#fff",
-                    pointBorderWidth: 2
+                    backgroundColor: "#2563eb",
+                    borderColor: "#1d4ed8",
+                    borderWidth: 1,
+
+                    stack: "total",
+
+                    borderRadius: 0,
+                    borderSkipped: false,
+
+                    barThickness: 30
                 }
+
             ]
         },
 
@@ -154,14 +140,14 @@ function initChart() {
             responsive: true,
             maintainAspectRatio: false,
 
+            animation: {
+                duration: 1200,
+                easing: "easeOutQuart"
+            },
+
             interaction: {
                 intersect: false,
                 mode: "index"
-            },
-
-            animation: {
-                duration: 1500,
-                easing: "easeOutQuart"
             },
 
             plugins: {
@@ -171,7 +157,7 @@ function initChart() {
 
                     labels: {
                         usePointStyle: true,
-                        pointStyle: "circle",
+                        pointStyle: "rect",
                         padding: 20,
                         font: {
                             size: 13,
@@ -185,14 +171,6 @@ function initChart() {
                     backgroundColor: "#0f172a",
 
                     padding: 12,
-
-                    titleFont: {
-                        size: 14
-                    },
-
-                    bodyFont: {
-                        size: 13
-                    },
 
                     callbacks: {
                         label(context) {
@@ -210,6 +188,8 @@ function initChart() {
             scales: {
 
                 x: {
+                    stacked: true,
+
                     grid: {
                         display: false
                     },
@@ -221,6 +201,8 @@ function initChart() {
 
                 y: {
 
+                    stacked: true,
+
                     beginAtZero: true,
 
                     grid: {
@@ -231,7 +213,7 @@ function initChart() {
                         color: "#64748b",
 
                         callback(value) {
-                            return value.toLocaleString();
+                            return value.toLocaleString() + " FCFA";
                         }
                     }
                 }

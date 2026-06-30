@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 # ================= MIDDLEWARE =================
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,10 +55,12 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    'gestion.middleware.SessionTimeoutMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'cybercafe.urls'
 
