@@ -1,0 +1,25 @@
+body {
+    min-height: 100vh; min-height: 100dvh; height: auto; padding: 24px 16px;
+    background: radial-gradient(ellipse at top left, #e5edff, transparent 65%), #f5f7fb;
+    overflow: auto; color: #17243c;
+}
+body::before, body::after { display: none; }
+.login-box {
+    width: 100%; max-width: 440px; padding: 36px;
+    border: 1px solid #e3e9f1; border-radius: 18px; background: white;
+    box-shadow: 0 16px 60px #17243c0d; animation: none;
+}
+.company-logo { margin-bottom: 28px; }
+.company-logo img { width: 72px; height: 72px; border: 1px solid #e3e9f1; border-radius: 16px; padding: 4px; box-shadow: none; }
+.company-logo h1 { font-size: 23px; color: #17243c; letter-spacing: -.5px; margin-top: 14px; }
+h2 { font-size: 20px; margin-bottom: 8px; color: #17243c; }
+.login-intro { color: #66758b; font-size: 14px; line-height: 1.5; margin-bottom: 28px; }
+label { font-size: 13px; color: #55647b; }
+input { border: 1px solid #dce3ed; border-radius: 8px; font-size: 16px; }
+input:focus { border-color: #2459d3; box-shadow: 0 0 0 3px #2459d31f; }
+button { background: #2459d3; border-radius: 8px; font-size: 15px; }
+button:hover { background: #1944ad; transform: none; box-shadow: none; }
+button:focus-visible { outline: 3px solid #2459d3; outline-offset: 3px; }
+.errorlist { text-align: left; background: #fff1f2; color: #b42332; padding: 12px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+.footer { color: #66758b; font-size: 12px; margin-top: 28px; }
+@media (max-width: 480px) { .login-box { padding: 28px 22px; } }

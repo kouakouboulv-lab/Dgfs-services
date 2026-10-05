@@ -17,20 +17,21 @@
 </head>
 
 
-<body>
+<body class="app-shell">
+<a class="skip-link" href="#main-content">Aller au contenu</a>
 
 
 <!-- ================= LOADER ================= -->
 
 <!-- LOADER -->
-<div id="loader">
+<div id="loader" aria-hidden="true">
 
     <div class="loader-circle circle-blue"></div>
     <div class="loader-circle circle-green"></div>
     <div class="loader-circle circle-orange"></div>
 
     <img src="{% static 'img/logo.png' %}" 
-         class="loader-logo">
+         class="loader-logo" alt="">
 
 </div>
 
@@ -40,7 +41,7 @@
 
 {% with request.resolver_match.url_name as url_name %}
 
-<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light sticky-top" aria-label="Navigation principale">
 
     <div class="container-fluid">
 
@@ -50,7 +51,7 @@
 
             <img src="{% static 'img/logo.png' %}" alt="Logo">
 
-            Dgf-services
+            <span class="brand-text">DGF Services<small>Espace de gestion</small></span>
 
         </a>
 
@@ -59,7 +60,7 @@
         <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#menu">
+                data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Ouvrir le menu">
 
             <span class="navbar-toggler-icon"></span>
 
@@ -122,7 +123,7 @@
                     <a class="nav-link {% if url_name == 'statistiques' %}active{% endif %}"
                        href="{% url 'statistiques' %}">
 
-                        <i class="bi bi-search"></i> Statistiques
+                        <i class="bi bi-bar-chart-line"></i> Statistiques
 
                     </a>
 
@@ -139,6 +140,13 @@
 
                     </a>
 
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link export-link" href="{% url 'export_csv' %}"
+                       title="Exporter toutes les activités, dépenses, paiements et utilisateurs">
+                        <i class="bi bi-download" aria-hidden="true"></i> Export CSV
+                    </a>
                 </li>
 
                 {% endif %}
@@ -192,7 +200,7 @@
 
 <!-- CONTENT -->
 
-<div class="container-fluid mt-4 px-4">
+<main id="main-content" class="container-fluid app-content" tabindex="-1">
 
 
     <div class="main-container">
@@ -206,9 +214,9 @@
     </div>
 
 
-</div>
+</main>
 
-
+<link rel="stylesheet" href="{% static 'gestion/css/interface.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="{% static 'js/base.js' %}"></script>

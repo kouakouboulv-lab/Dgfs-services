@@ -1,6 +1,7 @@
 from django.urls import path
 from django.shortcuts import redirect
 from . import views
+from .exports import export_csv
 from django.contrib.auth import views as auth_views
 
 # ================= HOME =================
@@ -35,6 +36,7 @@ urlpatterns = [
 
     # EXPORT PDF
     path("export/pdf/", views.export_pdf, name="export_pdf"),
+    path("export/csv/", export_csv, name="export_csv"),
 
     path("delete-temp/<int:id>/", views.delete_temp, name="delete_temp"),
 

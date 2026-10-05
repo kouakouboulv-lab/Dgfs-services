@@ -6,25 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // LOADER
     // =========================
 
-    if (!sessionStorage.getItem("firstLoadDone")) {
-
-        sessionStorage.setItem("firstLoadDone", "true");
-
-        setTimeout(() => {
-
-            loader.classList.add("loader-hide");
-
-            setTimeout(() => {
-                loader.style.display = "none";
-            }, 500);
-
-        }, 3000);
-
-    } else {
-
-        loader.style.display = "none";
-
-    }
+    if (loader) loader.style.display = "none";
 
     // =========================
     // LOADER LORS DES CLICS
@@ -32,13 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".nav-link, .navbar-brand").forEach(link => {
 
-        link.addEventListener("click", () => {
+        if (link.classList.contains("active")) link.setAttribute("aria-current", "page");
 
-            loader.style.display = "flex";
-            loader.classList.remove("loader-hide");
+    });
 
-        });
-
+    // Make calendar cells usable with the keyboard, including refreshed cells.
+    document.addEventListener("keydown", (event) => {
+        const day = event.target.closest(".calendar-click[role='button']");
+        if (day && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            day.click();
+        }
     });
 
     // =========================

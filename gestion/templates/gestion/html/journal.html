@@ -14,31 +14,37 @@
     <!-- ================= HEADER ================= -->
    <div class="title-row">
 
-        <div class="page-title">
-            📒 Rapport journalier
+        <div>
+            <div class="page-eyebrow">Votre activité au quotidien</div>
+            <h1 class="page-title">Rapport journalier</h1>
+            <p class="page-subtitle">Enregistrez vos services et suivez les encaissements du jour.</p>
         </div>
 
         <div class="kpi-grid">
 
             <div class="mini-stat revenue">
-                <small>💰 Revenus</small>
+                <small><i class="bi bi-arrow-up-right" aria-hidden="true"></i> Revenus</small>
                 <strong id="total-revenus">{{ total }}</strong>
+                <span class="stat-unit">FCFA</span>
             </div>
 
             <div class="mini-stat depense">
                 <small>💸 Dépenses</small>
                 <strong id="total-depenses">{{ total_depenses }}</strong>
+                <span class="stat-unit">FCFA</span>
             </div>
 
             <div class="mini-stat mobile">
                 <small>📱 Mobile Money</small>
                 <strong id="total-mobile">{{ mobile_money }}</strong>
+                <span class="stat-unit">FCFA</span>
             </div>
 
             <div class="mini-stat espece">
                 <small>💵 Espèces</small>
                 <strong id="total-especes">{{ especes }}</strong>
-
+                <span class="stat-unit">FCFA</span>
+            </div>
         </div>
 
     </div>
@@ -53,6 +59,7 @@
                 <div class="card-body">
 
                     <form id="form-activity" method="POST">
+                        <h2 class="section-title"><i class="bi bi-plus-circle" aria-hidden="true"></i> Nouvelle activité</h2>
                         {% csrf_token %}
 
                         <input type="hidden" name="action" value="add_activity">
@@ -60,8 +67,9 @@
                         <div class="row g-3">
 
                             <div class="col-md-3">
-                                <div class="label">Client</div>
+                                <label class="label" for="activity-client">Client</label>
                                 <input type="text"
+                                       id="activity-client"
                                        name="client"
                                        class="form-control"
                                        placeholder="Nom client">
@@ -69,7 +77,7 @@
 
                             <div class="col-md-3">
 
-                                <div class="label">Service</div>
+                                <label class="label" for="service">Service</label>
 
                                 <select name="service" id="service" class="form-select" required>
 
@@ -105,24 +113,27 @@
 
                             </div>
                             <div class="col-md-2">
-                                <div class="label">PU</div>
+                                <label class="label" for="activity-price">Prix unitaire</label>
                                 <input type="number"
+                                       id="activity-price"
                                        name="prix_unitaire"
                                        class="form-control"
-                                       placeholder="Ex:100F">
+                                       placeholder="Ex. : 100">
                             </div>
 
                             <div class="col-md-2">
-                                <div class="label">Qté</div>
+                                <label class="label" for="activity-quantity">Quantité</label>
                                 <input type="number"
+                                       id="activity-quantity"
                                        name="quantite"
                                        class="form-control"
                                        placeholder="1" required>
                             </div>
 
                             <div class="col-md-2">
-                                <div class="label">Total</div>
+                                <label class="label" for="activity-total">Total</label>
                                 <input type="number"
+                                       id="activity-total"
                                        name="montant_total"
                                        class="form-control"
                                        placeholder="Total">
@@ -143,6 +154,7 @@
             
             <!-- ================= TABLE ================= -->
             <div class="card-pro">
+                <h2 class="section-title table-title">Activités enregistrées <span class="section-badge">{{ activites|length }}</span></h2>
                 <div class="table-scroll ">
 
                     <table id="activity-table" class="table">
@@ -168,7 +180,7 @@
                                 <td><strong>{{ a.montant }} FCFA</strong></td>
                                 <td>
                                     <a href="#"
-                                        class="btn btn-danger btn-sm delete-activity"
+                                        class="btn btn-danger btn-sm delete-activity" aria-label="Supprimer cette activité"
                                         data-url="{% url 'supprimer_activite' a.id %}">
                                          🗑
                                     </a>
@@ -197,6 +209,7 @@
                 <div class="card-body">
 
                     <form id="form-depense" method="POST">
+                        <h2 class="section-title">Dépenses du jour</h2>
                         {% csrf_token %}
 
                         <input type="hidden" name="action" value="save_depense">
@@ -204,13 +217,15 @@
                         <div class="row g-3">
 
                             <div class="col-md-8">
+                                <label class="label" for="daily-expense">Montant de la dépense (FCFA)</label>
                                 <input type="number"
+                                       id="daily-expense"
                                        name="depense_jour"
                                        class="form-control"
                                        placeholder="💸 Ajouter une dépense">
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-4 d-flex align-items-end">
                                 <button type="submit" class="btn btn-danger w-100"
                                         name="action"
                                         value="save_depense">
@@ -241,16 +256,18 @@
                         <div class="row g-3">
 
                             <div class="col-md-6">
-                                <div class="label">📱 Mobile Money</div>
+                                <label class="label" for="payment-mobile">Mobile Money (FCFA)</label>
                                 <input type="number"
+                                       id="payment-mobile"
                                        name="mobile_money"
                                        class="form-control"
                                        value="{{ mobile_money|default:0 }}">
                             </div>
 
                             <div class="col-md-6">
-                                <div class="label">💵 Espèces</div>
+                                <label class="label" for="payment-cash">Espèces (FCFA)</label>
                                 <input type="number"
+                                       id="payment-cash"
                                        name="especes"
                                        class="form-control"
                                        value="{{ especes|default:0 }}">
@@ -302,7 +319,7 @@
 
                         {% for day in calendrier %}
 
-                            <div class="calendar-day calendar-click
+                            <div role="button" tabindex="0" aria-label="Voir les détails du {{ day.date|date:'d/m/Y' }} : {{ day.total }} FCFA" class="calendar-day calendar-click
                                 {% if day.is_today %}today{% endif %}
                                 {% if day.is_selected %}selected{% endif %}"
                                 data-date="{{ day.date|date:'Y-m-d' }}">
